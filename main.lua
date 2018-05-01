@@ -4,6 +4,9 @@ Object = require('src.lib.classic')
 function love.load()
     local objectFiles = {}
     recursiveEnumerate('src/objects', objectFiles)
+    requireFiles(objectFiles)
+    -- circle = Circle(400, 300, 50)
+    hyperCircle = HyperCircle(400, 300, 50, 10, 120)
 end
 
 function love.update(dt)
@@ -11,7 +14,8 @@ function love.update(dt)
 end
 
 function love.draw()
-
+    -- circle:draw()
+    hyperCircle:draw()
 end
 
 function love.keypressed(key)
