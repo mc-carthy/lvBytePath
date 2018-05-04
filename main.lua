@@ -8,13 +8,20 @@ function love.load()
     requireFiles(objectFiles)
     input = Input()
     input:bind('mouse1', 'test')
+    input:bind('a', 'add')
+    sum = 0
     hyperCircle = HyperCircle(400, 300, 50, 10, 120)
 end
 
 function love.update(dt)
-    if input:pressed('test') then print('pressed') end
-    if input:released('test') then print('released') end
-    if input:down('test') then print('down') end
+    -- if input:pressed('test') then print('pressed') end
+    -- if input:released('test') then print('released') end
+    -- if input:down('test') then print('down') end
+    if input:down('test', 0.5) then print('test event') end
+    if input:down('add', 0.25) then
+        sum = sum + 1
+        print(sum)
+    end
 end
 
 function love.draw()
