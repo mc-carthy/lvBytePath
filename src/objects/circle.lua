@@ -11,3 +11,5 @@ end
 function Circle:draw()
     love.graphics.circle('fill', self.x, self.y, self.radius)
 end
+
+-- return Circle
