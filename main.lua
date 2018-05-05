@@ -11,15 +11,13 @@ function love.load()
     timer = Timer()
     rect1 = { x = 400, y = 300, w = 50, h = 200 }
     rect2 = { x = 400, y = 300, w = 200, h = 50 }
-    timer:tween(1, rect1, { w = 0 }, 'in-out-cubic')
-    timer:after(1, function() 
-        timer:tween(1, rect2, { h = 0 }, 'in-out-cubic')
-        timer:after(2, function()
+    timer:tween(1, rect1, { w = 0 }, 'in-out-cubic', function()
+        timer:tween(1, rect2, { h = 0 }, 'in-out-cubic', function ()
             timer:tween(2, rect1, { w = 50 }, 'in-out-cubic')
             timer:tween(2, rect2, { h = 50 }, 'in-out-cubic')
         end)
     end)
-    end
+end
     
 function love.update(dt)
     timer:update(dt)
