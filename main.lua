@@ -1,31 +1,31 @@
 -- require('src.utils.debug')
 Object = require('src.lib.classic')
 Input = require('src.lib.input')
+Timer = require('src.lib.timer')
 
 function love.load()
     local objectFiles = {}
     recursiveEnumerate('src/objects', objectFiles)
     requireFiles(objectFiles)
     input = Input()
-    input:bind('mouse1', 'test')
-    input:bind('a', 'add')
-    sum = 0
+    timer = Timer.new()
+    timer:every(1, function() print(love.math.random()) end, 5)
+    circle = { radius = 24 }
+    timer:after(2, function()
+        timer:tween(6, circle, {radius = 96}, 'in-out-cubic', function()
+            timer:tween(2, circle, {radius = 24}, 'in-out-cubic')
+        end)
+    end)    
     hyperCircle = HyperCircle(400, 300, 50, 10, 120)
 end
 
 function love.update(dt)
-    -- if input:pressed('test') then print('pressed') end
-    -- if input:released('test') then print('released') end
-    -- if input:down('test') then print('down') end
-    if input:down('test', 0.5) then print('test event') end
-    if input:down('add', 0.25) then
-        sum = sum + 1
-        print(sum)
-    end
+    timer:update(dt)
 end
 
 function love.draw()
-    hyperCircle:draw()
+    -- hyperCircle:draw()
+    love.graphics.circle('fill', love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, circle.radius, 32)
 end
 
 function love.keypressed(key)
