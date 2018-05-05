@@ -2,50 +2,74 @@
 Object = require('src.lib.classic')
 Input = require('src.lib.input')
 Timer = require('src.lib.timer')
-
-local function reduceRectWidth(rect, time)
-    local value = 40
-    if rect.w > 0 then
-        rect.w = rect.w - value
-        timer:tween(time, rect, {drawW = rect.w}, 'in-out-cubic')
-    end
-end
+tbl = require('src.lib.moses')
 
 function love.load()
     local objectFiles = {}
     recursiveEnumerate('src/objects', objectFiles)
     requireFiles(objectFiles)
-    input = Input()
-    timer = Timer()
-    rect1 = { x = 300, y = 300, w = 200, h = 50, drawW = 200, colour = { 191, 63, 63 } }
-    rect2 = { x = 300, y = 300, w = 200, h = 50, drawW = 200, colour = { 191, 0, 0 } }
-    input:bind('space', 'damage')    
+    a = {1, 2, '3', 4, '5', 6, 7, true, 9, 10, 11, a = 1, b = 2, c = 3, {1, 2, 3}}
+    b = {1, 1, 3, 4, 5, 6, 7, false}
+    c = {'1', '2', '3', 4, 5, 6}
+    d = {1, 4, 3, 4, 5, 6}
+
+
+    -- tbl.each(a, print)
+    
+    -- print(tbl.count(b, 1))
+    
+    -- d = tbl.map(d, function(_, v) return v + 2 end)
+
+    -- a = tbl.map(a, function(_, v)
+    --     if type(v) == 'number' then
+    --         return v * 2
+    --     elseif type(v) == 'string' then
+    --         return v .. 'xD'
+    --     elseif type(v) == 'boolean' then
+    --         return tostring(not v)
+    --     elseif type(v) == 'table' then
+    --         return nil
+    --     end
+    -- end)
+
+    -- d = tbl.reduce(d, function(memo, v) return memo + v end)
+
+    -- if tbl.any(b, 7) then
+    --     print('Table b contains 7')
+    -- end
+
+    -- print(tbl.detect(d, 4))
+
+    -- d = tbl.filter(d, function(_, v) return v < 5 end)
+
+    -- c = tbl.filter(c, function(_, v) if type(v) == 'string' then return v end end)
+
+    -- print(tbl.all(c, function(_, v) return type(v) == 'number' end))
+    -- print(tbl.all(d, function(_, v) return type(v) == 'number' end))
+
+    -- d = tbl.shuffle(d, os.time())
+
+    -- d = tbl.reverse(d)
+
+    -- d = tbl.pull(d, 1, 4)
+
+    -- bcd = tbl.union(b, c, d)
+
+    -- bd = tbl.intersection(b, d)
+
+    -- bd = tbl.append(b, d)
 end
     
 function love.update(dt)
-    timer:update(dt)
-    if input:pressed('damage') then
-        reduceRectWidth(rect1, 1)
-        reduceRectWidth(rect2, 2)
-    end
-    if rect1.drawW < rect1.w then
-        rect1.drawW = rect1.w
-    end
-    if rect2.drawW < rect2.w then
-        rect2.drawW = rect2.w
-    end
+
 end
 
 function love.draw()
-    love.graphics.setColor(rect2.colour)
-    love.graphics.rectangle('fill', rect2.x, rect2.y - rect2.h / 2, rect2.drawW, rect2.h)
-    love.graphics.setColor(rect1.colour)
-    love.graphics.rectangle('fill', rect1.x, rect1.y - rect1.h / 2, rect1.drawW, rect1.h)
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.print('Rect1 w: ' .. rect1.w, 20, 10)
-    love.graphics.print('Rect1 drawW: ' .. string.format("%.0f", rect1.drawW), 20, 30)
-    love.graphics.print('Rect2 w: ' .. rect2.w, 20, 60)
-    love.graphics.print('Rect1 drawW: ' .. string.format("%.0f", rect2.drawW), 20, 80)
+    local i = 1
+    for k, v in pairs(bd) do
+        i = i + 1
+        love.graphics.print(tostring(v), 10, i * 20)
+    end
 end
 
 function love.keypressed(key)
