@@ -6,26 +6,36 @@ Tbl = require('src.lib.moses')
 
 function love.load()
     local objectFiles = {}
+    local roomFiles = {}
     recursiveEnumerate('src/objects', objectFiles)
+    recursiveEnumerate('src/rooms', roomFiles)
     requireFiles(objectFiles)
-    currentRoom = CircleRoom()
+    requireFiles(roomFiles)
 end
     
 function love.update(dt)
-    currentRoom:update(dt)
+    if currentRoom and currentRoom.update then
+        currentRoom:update(dt)
+    end
 end
 
 function love.draw()
-    currentRoom:draw()
+    if currentRoom and currentRoom.draw then
+        currentRoom:draw()
+    end
+end
+
+function gotoRoom(roomType, ...)
+    currentRoom = _G[roomType](...)
 end
 
 function love.keypressed(key)
     if key == '1' then
-        currentRoom = CircleRoom()
+        gotoRoom('CircleRoom')
     elseif key == '2' then
-        currentRoom = RectangleRoom()
+        gotoRoom('RectangleRoom')
     elseif key == '3' then
-        currentRoom = PolygonRoom()
+        gotoRoom('PolygonRoom')
     end
     if key == 'escape' then
         love.event.quit()
