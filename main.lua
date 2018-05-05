@@ -8,21 +8,26 @@ function love.load()
     recursiveEnumerate('src/objects', objectFiles)
     requireFiles(objectFiles)
     input = Input()
-    timer = Timer.new()
-    for i = 1, 10 do
-        timer:after(0.5 * i, function() 
-            print(love.math.random())
+    timer = Timer()
+    rect1 = { x = 400, y = 300, w = 50, h = 200 }
+    rect2 = { x = 400, y = 300, w = 200, h = 50 }
+    timer:tween(1, rect1, { w = 0 }, 'in-out-cubic')
+    timer:after(1, function() 
+        timer:tween(1, rect2, { h = 0 }, 'in-out-cubic')
+        timer:after(2, function()
+            timer:tween(2, rect1, { w = 50 }, 'in-out-cubic')
+            timer:tween(2, rect2, { h = 50 }, 'in-out-cubic')
         end)
+    end)
     end
-    hyperCircle = HyperCircle(400, 300, 50, 10, 120)
-end
-
+    
 function love.update(dt)
     timer:update(dt)
 end
 
 function love.draw()
-    -- hyperCircle:draw()
+    love.graphics.rectangle('fill', rect1.x - rect1.w / 2, rect1.y - rect1.h / 2, rect1.w, rect1.h)
+    love.graphics.rectangle('fill', rect2.x - rect2.w / 2, rect2.y - rect2.h / 2, rect2.w, rect2.h)
 end
 
 function love.keypressed(key)
