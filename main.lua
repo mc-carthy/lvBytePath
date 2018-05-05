@@ -3,29 +3,49 @@ Object = require('src.lib.classic')
 Input = require('src.lib.input')
 Timer = require('src.lib.timer')
 
+local function reduceRectWidth(rect, time)
+    local value = 40
+    if rect.w > 0 then
+        rect.w = rect.w - value
+        timer:tween(time, rect, {drawW = rect.w}, 'in-out-cubic')
+    end
+end
+
 function love.load()
     local objectFiles = {}
     recursiveEnumerate('src/objects', objectFiles)
     requireFiles(objectFiles)
     input = Input()
     timer = Timer()
-    rect1 = { x = 400, y = 300, w = 50, h = 200 }
-    rect2 = { x = 400, y = 300, w = 200, h = 50 }
-    timer:tween(1, rect1, { w = 0 }, 'in-out-cubic', function()
-        timer:tween(1, rect2, { h = 0 }, 'in-out-cubic', function ()
-            timer:tween(2, rect1, { w = 50 }, 'in-out-cubic')
-            timer:tween(2, rect2, { h = 50 }, 'in-out-cubic')
-        end)
-    end)
+    rect1 = { x = 300, y = 300, w = 200, h = 50, drawW = 200, colour = { 191, 63, 63 } }
+    rect2 = { x = 300, y = 300, w = 200, h = 50, drawW = 200, colour = { 191, 0, 0 } }
+    input:bind('space', 'damage')    
 end
     
 function love.update(dt)
     timer:update(dt)
+    if input:pressed('damage') then
+        reduceRectWidth(rect1, 1)
+        reduceRectWidth(rect2, 2)
+    end
+    if rect1.drawW < rect1.w then
+        rect1.drawW = rect1.w
+    end
+    if rect2.drawW < rect2.w then
+        rect2.drawW = rect2.w
+    end
 end
 
 function love.draw()
-    love.graphics.rectangle('fill', rect1.x - rect1.w / 2, rect1.y - rect1.h / 2, rect1.w, rect1.h)
-    love.graphics.rectangle('fill', rect2.x - rect2.w / 2, rect2.y - rect2.h / 2, rect2.w, rect2.h)
+    love.graphics.setColor(rect2.colour)
+    love.graphics.rectangle('fill', rect2.x, rect2.y - rect2.h / 2, rect2.drawW, rect2.h)
+    love.graphics.setColor(rect1.colour)
+    love.graphics.rectangle('fill', rect1.x, rect1.y - rect1.h / 2, rect1.drawW, rect1.h)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.print('Rect1 w: ' .. rect1.w, 20, 10)
+    love.graphics.print('Rect1 drawW: ' .. string.format("%.0f", rect1.drawW), 20, 30)
+    love.graphics.print('Rect2 w: ' .. rect2.w, 20, 60)
+    love.graphics.print('Rect1 drawW: ' .. string.format("%.0f", rect2.drawW), 20, 80)
 end
 
 function love.keypressed(key)
