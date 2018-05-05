@@ -9,13 +9,11 @@ function love.load()
     requireFiles(objectFiles)
     input = Input()
     timer = Timer.new()
-    timer:every(1, function() print(love.math.random()) end, 5)
-    circle = { radius = 24 }
-    timer:after(2, function()
-        timer:tween(6, circle, {radius = 96}, 'in-out-cubic', function()
-            timer:tween(2, circle, {radius = 24}, 'in-out-cubic')
+    for i = 1, 10 do
+        timer:after(0.5 * i, function() 
+            print(love.math.random())
         end)
-    end)    
+    end
     hyperCircle = HyperCircle(400, 300, 50, 10, 120)
 end
 
@@ -25,7 +23,6 @@ end
 
 function love.draw()
     -- hyperCircle:draw()
-    love.graphics.circle('fill', love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, circle.radius, 32)
 end
 
 function love.keypressed(key)
