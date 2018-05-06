@@ -12,6 +12,10 @@ function love.load()
     love.graphics.setLineStyle('rough')
     love.window.setMode(gw * sx, gh * sy)
     input = Input()
+    input:bind('left', 'left')
+    input:bind('right', 'right')
+    input:bind('up', 'up')
+    input:bind('down', 'down')
     camera = Camera()
     local objectFiles = {}
     local roomFiles = {}
