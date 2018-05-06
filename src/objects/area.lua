@@ -52,7 +52,9 @@ function Area:update(dt)
     for i = #self.gameObjects, 1, -1 do
         local object = self.gameObjects[i]
         if object.update then object:update(dt) end
-        if object.dead then table.remove(self.gameObjects, i) end
+        if object.dead then 
+            table.remove(self.gameObjects, i) 
+        end
     end
 end
 
