@@ -4,6 +4,7 @@ Input = require('src.lib.input')
 Timer = require('src.lib.timer')
 Tbl = require('src.lib.moses')
 Camera = require('src.lib.camera')
+Physics = require('src.lib.windfield')
 require('src.utils.utils')
 
 function love.load()
