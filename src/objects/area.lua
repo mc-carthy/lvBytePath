@@ -40,20 +40,12 @@ end
 
 function Area:getClosestObject(x, y, rad, targets)
     local objects = self:queryCircleArea(x, y, rad, targets)
-    local minDist = nil
-    local closest = nil
-    for _, v in pairs(objects) do
-        if closest == nil then
-            closest = v
-            local a = {x = x, y = y}
-            minDist = Distance(a, v)
-        elseif Distance(closest, v) < minDist then
-            closest = v
-            local a = {x = x, y = y}
-            minDist = Distance(a, v)
-        end
-    end
-    return closest
+    table.sort(objects, function(a, b)
+        local da = Distance({ x = x, y = y }, a)
+        local db = Distance({ x = x, y = y }, b)
+        return da < db
+    end)
+    return objects[1]
 end
 
 function Area:update(dt)

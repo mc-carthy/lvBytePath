@@ -16,7 +16,7 @@ function Stage:new()
     self.area = Area()
     self.timer = Timer()
     populateRectangles(self)
-    closest = self.area:getClosestObject(400, 300, 100, {'Rectangle'})
+    closest = self.area:getClosestObject(400, 300, 300, {'Rectangle'})
     if closest then
         print(closest.x .. '-' .. closest.y)
     end
@@ -35,7 +35,7 @@ end
 
 function Stage:draw()
     self.area:draw(dt)
-    love.graphics.circle('line',400, 300, 100)
+    love.graphics.circle('line',400, 300, 300)
     if closest then
         love.graphics.line(0, closest.y, love.graphics.getWidth(), closest.y)
         love.graphics.line(closest.x, 0, closest.x, love.graphics.getHeight())
