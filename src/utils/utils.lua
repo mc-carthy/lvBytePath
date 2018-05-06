@@ -19,3 +19,19 @@ function Random(a, b)
         return a
     end
 end
+
+function PrintAll(...)
+    local args = {...}
+    for k, v in pairs(args) do
+        print(v)
+    end
+end
+
+function PrintText(...)
+    local args = {...}
+    local str = ''
+    for k, v in pairs(args) do
+        str = str .. v
+    end
+    print(str)
+end

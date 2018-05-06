@@ -13,6 +13,8 @@ function love.load()
     requireFiles(objectFiles)
     requireFiles(roomFiles)
     gotoRoom('Stage')
+    -- PrintAll(1, 2, 3, 4)
+    -- PrintText('Hi', ' ', 'from', ' ', 'PrintText')
 end
     
 function love.update(dt)
