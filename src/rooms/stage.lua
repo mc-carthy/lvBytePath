@@ -16,6 +16,7 @@ function Stage:new()
     self.area = Area()
     self.timer = Timer()
     populateRectangles(self)
+    PrintAll(unpack(self.area:queryCircleArea(400, 300, 100, {'Rectangle'})))
 end
 
 function Stage:update(dt)
