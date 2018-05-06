@@ -3,6 +3,7 @@ Object = require('src.lib.classic')
 Input = require('src.lib.input')
 Timer = require('src.lib.timer')
 Tbl = require('src.lib.moses')
+require('src.utils.utils')
 
 function love.load()
     local objectFiles = {}
@@ -11,6 +12,7 @@ function love.load()
     recursiveEnumerate('src/rooms', roomFiles)
     requireFiles(objectFiles)
     requireFiles(roomFiles)
+    gotoRoom('Stage')
 end
     
 function love.update(dt)
