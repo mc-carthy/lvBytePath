@@ -38,6 +38,24 @@ function Area:queryCircleArea(x, y, rad, targets)
     return objects
 end
 
+function Area:getClosestObject(x, y, rad, targets)
+    local objects = self:queryCircleArea(x, y, rad, targets)
+    local minDist = nil
+    local closest = nil
+    for _, v in pairs(objects) do
+        if closest == nil then
+            closest = v
+            local a = {x = x, y = y}
+            minDist = Distance(a, v)
+        elseif Distance(closest, v) < minDist then
+            closest = v
+            local a = {x = x, y = y}
+            minDist = Distance(a, v)
+        end
+    end
+    return closest
+end
+
 function Area:update(dt)
     for i = #self.gameObjects, 1, -1 do
         local object = self.gameObjects[i]
