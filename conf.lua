@@ -8,6 +8,7 @@ function love.conf(t)
     t.window.height = gh
     t.window.title = 'LÖVE BytePath'
     t.window.icon = nil
+    t.window.highdpi = false
 
     t.modules.audio = true
     t.modules.event = true

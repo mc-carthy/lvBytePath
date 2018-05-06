@@ -3,6 +3,7 @@ Object = require('src.lib.classic')
 Input = require('src.lib.input')
 Timer = require('src.lib.timer')
 Tbl = require('src.lib.moses')
+Camera = require('src.lib.camera')
 require('src.utils.utils')
 
 function love.load()
@@ -10,6 +11,7 @@ function love.load()
     love.graphics.setLineStyle('rough')
     love.window.setMode(gw * sx, gh * sy)
     input = Input()
+    camera = Camera()
     local objectFiles = {}
     local roomFiles = {}
     recursiveEnumerate('src/objects', objectFiles)
@@ -17,9 +19,11 @@ function love.load()
     requireFiles(objectFiles)
     requireFiles(roomFiles)
     gotoRoom('Stage')
+    input:bind('s', function() camera:shake(4, 60, 1) end)
 end
     
 function love.update(dt)
+    camera:update(dt)
     if currentRoom and currentRoom.update then
         currentRoom:update(dt)
     end

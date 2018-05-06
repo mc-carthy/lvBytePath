@@ -8,14 +8,18 @@ end
 
 function Stage:update(dt)
     self.timer:update(dt)
+    camera.smoother = Camera.smooth.damped(5)
+    camera:lockPosition(dt, gw, gh)
     self.area:update(dt)
 end
 
 function Stage:draw()
     love.graphics.setCanvas(self.mainCanvas)
     love.graphics.clear()
-        self.area:draw(dt)
-        love.graphics.circle('line', gw / 2, gh / 2, 100)
+        camera:attach(0, 0, gw * sx, gh * sy)
+        love.graphics.circle('line', gw / 2, gh / 2, 50)
+        self.area:draw()
+        camera:detach()
     love.graphics.setCanvas()
 
     love.graphics.setColor(255, 255, 255, 255)
