@@ -57,7 +57,8 @@ function Area:update(dt)
     for i = #self.gameObjects, 1, -1 do
         local object = self.gameObjects[i]
         if object.update then object:update(dt) end
-        if object.dead then 
+        if object.dead then
+            object:destroy()
             table.remove(self.gameObjects, i) 
         end
     end
@@ -67,5 +68,19 @@ function Area:draw()
     if self.world then self.world:draw() end
     for _, object in pairs(self.gameObjects) do
         if object.draw then object:draw() end
+    end
+end
+
+function Area:destroy()
+    for i = #self.gameObjects, 1, -1 do
+        local object = self.gameObjects[i]
+        object:destroy()
+        table.remove(self.gameObjects, i)
+    end
+    self.gameObjects = {}
+
+    if self.world then
+        self.world:destroy()
+        self.world = nil
     end
 end

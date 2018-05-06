@@ -25,6 +25,21 @@ function love.load()
     requireFiles(roomFiles)
     gotoRoom('Stage')
     input:bind('s', function() camera:shake(4, 60, 1) end)
+    input:bind('m', function()
+        print("Before collection: " .. collectgarbage("count")/1024)
+        collectgarbage()
+        print("After collection: " .. collectgarbage("count")/1024)
+        print("Object count: ")
+        local counts = typeCount()
+        for k, v in pairs(counts) do print(k, v) end
+        print("-------------------------------------")
+    end)
+    input:bind('n', function()
+        gotoRoom('Stage')
+    end)
+    input:bind('d', function()
+        currentRoom:destroy()
+    end)
 end
     
 function love.update(dt)
@@ -41,6 +56,7 @@ function love.draw()
 end
 
 function gotoRoom(roomType, ...)
+    if currentRoom and currentRoom.destroy then currentRoom:destroy() end
     currentRoom = _G[roomType](...)
 end
 
@@ -72,4 +88,48 @@ function requireFiles(files)
         local file = file:sub(1, -5)
         require(file)
     end
+end
+
+---------------------------------
+------- Memory management -------
+---------------------------------
+
+function countAll(f)
+    local seen = {}
+    local countTable
+    countTable = function(t)
+        if seen[t] then return end
+        f(t)
+	    seen[t] = true
+	    for k,v in pairs(t) do
+	        if type(v) == "table" then
+		        countTable(v)
+	        elseif type(v) == "userdata" then
+		        f(v)
+	        end
+	    end
+    end
+    countTable(_G)
+end
+
+function typeCount()
+    local counts = {}
+    local enumerate = function (o)
+        local t = typeName(o)
+        counts[t] = (counts[t] or 0) + 1
+    end
+    countAll(enumerate)
+    return counts
+end
+
+globalTypeTable = nil
+function typeName(o)
+    if globalTypeTable == nil then
+        globalTypeTable = {}
+        for k,v in pairs(_G) do
+	        globalTypeTable[v] = k
+	    end
+	globalTypeTable[0] = "table"
+    end
+    return globalTypeTable[getmetatable(o) or 0] or "Unknown"
 end
