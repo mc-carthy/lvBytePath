@@ -6,6 +6,9 @@ Tbl = require('src.lib.moses')
 require('src.utils.utils')
 
 function love.load()
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.graphics.setLineStyle('rough')
+    love.window.setMode(gw * sx, gh * sy)
     input = Input()
     local objectFiles = {}
     local roomFiles = {}
@@ -30,6 +33,11 @@ end
 
 function gotoRoom(roomType, ...)
     currentRoom = _G[roomType](...)
+end
+
+function resize(s)
+    love.window.setMode(s*gw, s*gh) 
+    sx, sy = s, s
 end
 
 function love.keypressed(key)

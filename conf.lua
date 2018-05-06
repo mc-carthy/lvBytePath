@@ -1,6 +1,11 @@
+gw = 480
+gh = 270 
+sx = 2
+sy = 2
+
 function love.conf(t)
-    t.window.width = 800
-    t.window.height = 600
+    t.window.width = gw
+    t.window.height = gh
     t.window.title = 'LÖVE BytePath'
     t.window.icon = nil
 
