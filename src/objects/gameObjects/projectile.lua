@@ -25,3 +25,7 @@ end
 function Projectile:draw()
     love.graphics.circle('line', self.x, self.y, self.s)
 end
+
+function Projectile:destroy()
+    Projectile.super.destroy(self)
+end

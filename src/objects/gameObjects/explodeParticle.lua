@@ -28,3 +28,7 @@ function ExplodeParticle:draw()
     love.graphics.setLineWidth(1)
     love.graphics.pop()
 end
+
+function ExplodeParticle:destroy()
+    ExplodeParticle.super.destroy(self)
+end
