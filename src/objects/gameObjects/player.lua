@@ -14,6 +14,13 @@ function Player:new(area, x, y, opts)
     self.baseMaxV = 100
     self.maxV = self.baseMaxV
     self.a = 100
+    self.maxBoost = 100
+    self.boost = self.maxBoost
+    self.boostGainRate = 10
+    self.boostUseRate = 50
+    self.canBoost = true
+    self.boostTimer = 0
+    self.boostCooldown = 2
 
     self.trailColour = skillPointColour
 
@@ -107,15 +114,31 @@ function Player:update(dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
+
+    self.boost = math.min(self.boost + self.boostGainRate * dt, self.maxBoost)
     self.maxV = self.baseMaxV
+    self.boostTimer = self.boostTimer + dt
+    if self.boostTimer > self.boostCooldown then self.canBoost = true end
     self.boosting = false
-    if input:down('up') then 
+    if input:down('up') and self.boost > 1 and self.canBoost then 
         self.maxV = 1.5 * self.baseMaxV
         self.boosting = true
+        self.boost = self.boost - self.boostUseRate * dt
+        if self.boost <= 1 then
+            self.boosting = false
+            self.canBoost = false
+            self.boostTimer = 0
+        end
     end
-    if input:down('down') then 
+    if input:down('down') and self.boost > 1 and self.canBoost then
         self.maxV = 0.5 * self.baseMaxV
         self.boosting = true
+        self.boost = self.boost - self.boostUseRate * dt
+        if self.boost <= 1 then
+            self.boosting = false
+            self.canBoost = false
+            self.boostTimer = 0
+        end
     end
     self.trailColour = self.boosting and boostColour or skillPointColour
     self.v = math.min(self.v + self.a * dt, self.maxV)
