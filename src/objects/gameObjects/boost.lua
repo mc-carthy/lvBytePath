@@ -23,8 +23,9 @@ end
 function Boost:die()
     self.dead = true
     self.area:addGameObject('BoostEffect', self.x, self.y, { colour = boostColour, w = self.w, h = self.h })
+    self.area:addGameObject('InfoText', self.x, self.y, { text = '+BOOST', colour = boostColour })
     for i = 1, love.math.random(4, 8) do 
-    	self.area:addGameObject('ExplodeParticle', self.x, self.y, {s = 3, colour = boostColour}) 
+    	self.area:addGameObject('ExplodeParticle', self.x, self.y, { s = 3, colour = boostColour })
     end
 end
 

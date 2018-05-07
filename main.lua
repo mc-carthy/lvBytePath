@@ -8,6 +8,7 @@ Physics = require('src.lib.windfield')
 Vector = require('src.lib.vector')
 Draft = require('src.lib.draft')()
 
+require('src.lib.utf8')
 require('src.utils.utils')
 require('src.utils.globals')
 
@@ -26,8 +27,10 @@ function love.load()
     flashFrames = nil
     local objectFiles = {}
     local roomFiles = {}
+    loadFonts('src/assets/fonts')
     recursiveEnumerate('src/objects', objectFiles)
     recursiveEnumerate('src/rooms', roomFiles)
+    recursiveEnumerate('src/assets/fonts', fonts)
     requireFiles(objectFiles)
     requireFiles(roomFiles)
     gotoRoom('Stage')
@@ -110,6 +113,21 @@ function requireFiles(files)
     for _, file in pairs(files) do
         local file = file:sub(1, -5)
         require(file)
+    end
+end
+
+function loadFonts(path)
+    fonts = {}
+    local fontPaths = {}
+    recursiveEnumerate(path, fontPaths)
+    for i = 8, 16, 1 do
+        for _, fontPath in pairs(fontPaths) do
+            local lastForwardSlashIndex = fontPath:find("/[^/]*$")
+            local fontName = fontPath:sub(lastForwardSlashIndex+1, -5)
+            local font = love.graphics.newFont(fontPath, i)
+            font:setFilter('nearest', 'nearest')
+            fonts[fontName .. '_' .. i] = font
+        end
     end
 end
 
