@@ -21,14 +21,55 @@ function Player:new(area, x, y, opts)
     self.timer:every(5, function() self.attack_speed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
-        self.area:addGameObject('TrailParticle', 
-        self.x - self.w * math.cos(self.r), self.y - self.h * math.sin(self.r), 
-        { parent = self, r = Random(2, 4), d = Random(0.15, 0.25), colour = self.trailColour}) 
+        if self.ship == 'Fighter' then
+            self.area:addGameObject(
+                'TrailParticle', 
+                self.x - 0.9 * self.w * math.cos(self.r) + 0.2 * self.w * math.cos(self.r - math.pi / 2),
+                self.y - 0.9 * self.w * math.sin(self.r) + 0.2 * self.w * math.sin(self.r - math.pi / 2),
+                { parent = self, r = Random(2, 4), d = Random(0.15, 0.25), colour = self.trailColour}
+            ) 
+            self.area:addGameObject(
+                'TrailParticle', 
+                self.x - 0.9 * self.w * math.cos(self.r) + 0.2 * self.w * math.cos(self.r + math.pi / 2),
+                self.y - 0.9 * self.w * math.sin(self.r) + 0.2 * self.w * math.sin(self.r + math.pi / 2),
+                { parent = self, r = Random(2, 4), d = Random(0.15, 0.25), colour = self.trailColour}
+            ) 
+        end
     end)
     self.timer:after(0.24 / self.attack_speed, function(f)
         self:shoot()
         self.timer:after(0.24 / self.attack_speed, f)
     end)
+
+
+    self.ship = 'Fighter'
+    self.polygons = {}
+    if self.ship == 'Fighter' then
+        self.polygons[1] = {
+            self.w, 0,
+            self.w / 2, -self.w / 2,
+            -self.w / 2, -self.w / 2,
+            -self.w, 0,
+            -self.w / 2, self.w / 2,
+            self.w / 2, self.w / 2,
+        }
+        
+        self.polygons[2] = {
+            self.w / 2, -self.w / 2,
+            0, -self.w,
+            -self.w - self.w / 2, -self.w,
+            -3 * self.w / 4, -self.w / 4,
+            -self.w / 2, -self.w / 2,
+        }
+        
+        self.polygons[3] = {
+            self.w / 2, self.w / 2,
+            -self.w / 2, self.w / 2,
+            -3 * self.w / 4, self.w / 4,
+            -self.w - self.w / 2, self.w,
+            0, self.w,
+        }
+    end
 end
 
 function Player:shoot()
@@ -84,8 +125,21 @@ function Player:update(dt)
 end
 
 function Player:draw()
-    love.graphics.circle('line', self.x, self.y, self.w)
+    -- love.graphics.circle('line', self.x, self.y, self.w)
     -- love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
+    PushRotate(self.x, self.y, self.r)
+        love.graphics.setColor(defaultColour)
+        for _, v in pairs(self.polygons) do
+            local points = Tbl.map(v, function(k, v)
+                if k % 2 == 1 then
+                    return self.x + v + Random(-1, 1)
+                else
+                    return self.y + v + Random(-1, 1)
+                end
+            end)
+            love.graphics.polygon('line', points)
+        end
+    love.graphics.pop()
 end
 
 function Player:destroy()
