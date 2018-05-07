@@ -114,6 +114,10 @@ function Player:tick()
     self.area:addGameObject('TickEffect', self.x, self.y, { parent = self })
 end
 
+function Player:addAmmo(amount)
+    self.ammo = math.min(self.ammo + amount, self.maxAmmo)
+end
+
 function Player:update(dt)
     Player.super.update(self, dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
@@ -152,7 +156,12 @@ function Player:update(dt)
     if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
 
     if self.collider:enter('Collectable') then
-        print(1)
+        local collisionData = self.collider:getEnterCollisionData('Collectable')
+        local object = collisionData.collider:getObject()
+        if object:is(Ammo) then
+            object:die()
+            self:addAmmo(5)
+        end
     end
 end
 

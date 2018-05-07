@@ -28,6 +28,14 @@ function Ammo:update(dt)
     end
 end
 
+function Ammo:die()
+    self.dead = true
+    self.area:addGameObject('AmmoEffect', self.x, self.y, { colour = ammoColour, w = self.w, h = self.h })
+    for i = 1, love.math.random(4, 8) do 
+    	self.area:addGameObject('ExplodeParticle', self.x, self.y, {s = 3, colour = ammoColour}) 
+    end
+end
+
 function Ammo:draw()
     love.graphics.setColor(ammoColour)
     PushRotate(self.x, self.y, self.collider:getAngle())
