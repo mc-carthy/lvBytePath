@@ -11,7 +11,8 @@ function Player:new(area, x, y, opts)
     self.r = -math.pi / 2
     self.rv = 1.66*math.pi
     self.v = 0
-    self.max_v = 100
+    self.baseMaxV = 100
+    self.maxV = self.baseMaxV
     self.a = 100
 
     self.attack_speed = 1
@@ -58,7 +59,10 @@ function Player:update(dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
-    self.v = math.min(self.v + self.a * dt, self.max_v)
+    self.maxV = self.baseMaxV
+    if input:down('up') then self.maxV = 1.5*self.baseMaxV end
+    if input:down('down') then self.maxV = 0.5*self.baseMaxV end
+    self.v = math.min(self.v + self.a * dt, self.maxV)
     self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
 
     if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
@@ -66,5 +70,5 @@ end
 
 function Player:draw()
     love.graphics.circle('line', self.x, self.y, self.w)
-    love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
+    -- love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
 end
