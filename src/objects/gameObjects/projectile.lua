@@ -13,6 +13,13 @@ function Projectile:update(dt)
     Projectile.super.update(self, dt)
     self.timer:update(dt)
     self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
+
+    if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
+end
+
+function Projectile:die()
+    self.dead = true
+    self.area:addGameObject('ProjectileDeathEffect', self.x, self.y, { colour = hpColour, w = 3 * self.s })
 end
 
 function Projectile:draw()

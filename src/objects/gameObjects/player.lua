@@ -24,34 +24,22 @@ end
 
 function Player:shoot()
     local d = 1.2 * self.w
-    -- self.area:addGameObject(
-    --     'ShootEffect', 
-    --     self.x + d * math.cos(self.r),
-    --     self.y + d * math.sin(self.r),
-    --     { player = self, d = d }
-    -- )
-    -- for i = -1, 1 do
-    --     self.area:addGameObject(
-    --         'Projectile', 
-    --         self.x + d * math.cos(self.r),
-    --         self.y + d * math.sin(self.r),
-    --         { r = self.r + i * math.pi / 6}
-    --     )
-    -- end
     self.area:addGameObject(
         'ShootEffect', 
         self.x + d * math.cos(self.r),
         self.y + d * math.sin(self.r),
         { player = self, d = d }
     )
-    for i = -1, 1 do
-        self.area:addGameObject(
-            'Projectile', 
-            self.x + d * math.cos(self.r + math.pi * i / 6),
-            self.y + d * math.sin(self.r + math.pi * i / 6),
-            { r = self.r }
-        )
-    end
+    self.area:addGameObject(
+        'Projectile', 
+        self.x + d * math.cos(self.r),
+        self.y + d * math.sin(self.r),
+        { r = self.r }
+    )
+end
+
+function Player:die()
+    self.dead = true
 end
 
 function Player:update(dt)
@@ -61,6 +49,8 @@ function Player:update(dt)
 
     self.v = math.min(self.v + self.a * dt, self.max_v)
     self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
+
+    if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
 end
 
 function Player:draw()
