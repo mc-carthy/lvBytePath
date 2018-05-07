@@ -6,6 +6,7 @@ function Player:new(area, x, y, opts)
     self.w, self.h = 12, 12
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
     self.collider:setObject(self)
+    self.collider:setCollisionClass('Player')
     self.collider:applyAngularImpulse(5000)
 
     self.r = -math.pi / 2
@@ -149,6 +150,10 @@ function Player:update(dt)
     self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
 
     if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
+
+    if self.collider:enter('Collectable') then
+        print(1)
+    end
 end
 
 function Player:draw()

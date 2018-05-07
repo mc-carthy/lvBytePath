@@ -6,7 +6,7 @@ function Ammo:new(area, x, y, opts)
     self.w, self.h = 8, 8
     self.collider = self.area.world:newRectangleCollider(self.x, self.y, self.w, self.h)
     self.collider:setObject(self)
-
+    self.collider:setCollisionClass('Collectable')
     self.collider:setFixedRotation(false)
     self.r = Random(0, 2 * math.pi)
     self.v = Random(10, 20)
