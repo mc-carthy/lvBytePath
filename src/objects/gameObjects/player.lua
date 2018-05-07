@@ -17,8 +17,8 @@ function Player:new(area, x, y, opts)
 
     self.trailColour = skillPointColour
 
-    self.attack_speed = 1
-    self.timer:every(5, function() self.attack_speed = Random(1, 2) end)
+    self.attackSpeed = 1
+    self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
         if self.ship == 'Fighter' then
@@ -36,9 +36,9 @@ function Player:new(area, x, y, opts)
             ) 
         end
     end)
-    self.timer:after(0.24 / self.attack_speed, function(f)
+    self.timer:after(0.24 / self.attackSpeed, function(f)
         self:shoot()
-        self.timer:after(0.24 / self.attack_speed, f)
+        self.timer:after(0.24 / self.attackSpeed, f)
     end)
 
 
