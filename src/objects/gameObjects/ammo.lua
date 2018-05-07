@@ -16,6 +16,16 @@ end
 
 function Ammo:update(dt)
     Ammo.super.update(self, dt)
+    local target = currentRoom.player
+    if target then
+        local projectileHeading = Vector(self.collider:getLinearVelocity()):normalized()
+        local angle = math.atan2(target.y - self.y, target.x - self.x)
+        local toTargetHeading = Vector(math.cos(angle), math.sin(angle)):normalized()
+        local finalHeading = (projectileHeading + 0.1 * toTargetHeading):normalized()
+        self.collider:setLinearVelocity(self.v * finalHeading.x, self.v * finalHeading.y)
+    else 
+        self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r)) 
+    end
 end
 
 function Ammo:draw()
