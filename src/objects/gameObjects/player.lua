@@ -16,6 +16,7 @@ function Player:new(area, x, y, opts)
 
     self.attack_speed = 1
     self.timer:every(5, function() self.attack_speed = Random(1, 2) end)
+    self.timer:every(5, function() self:tick() end)
     self.timer:after(0.24 / self.attack_speed, function(f)
         self:shoot()
         self.timer:after(0.24 / self.attack_speed, f)
@@ -46,6 +47,10 @@ function Player:die()
     flash(10)
     camera:shake(6, 60, 0.4)
     self.dead = true
+end
+
+function Player:tick()
+    self.area:addGameObject('TickEffect', self.x, self.y, { parent = self })
 end
 
 function Player:update(dt)
