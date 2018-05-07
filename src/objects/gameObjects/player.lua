@@ -16,7 +16,7 @@ function Player:new(area, x, y, opts)
     self.maxV = self.baseMaxV
     self.a = 100
     self.maxHp = 100
-    self.Hp = self.maxHp
+    self.hp = self.maxHp
     self.maxAmmo = 100
     self.ammo = self.maxAmmo
     self.maxBoost = 100
@@ -122,6 +122,10 @@ function Player:addBoost(amount)
     self.boost = math.min(self.boost + amount, self.maxBoost)
 end
 
+function Player:addHp(amount)
+    self.boost = math.min(self.hp + amount, self.maxHp)
+end
+
 function Player:update(dt)
     Player.super.update(self, dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
@@ -169,6 +173,10 @@ function Player:update(dt)
         if object:is(Boost) then
             object:die()
             self:addBoost(25)
+        end
+        if object:is(Health) then
+            object:die()
+            self:addHp(25)
         end
     end
 end
