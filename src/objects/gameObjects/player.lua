@@ -118,6 +118,10 @@ function Player:addAmmo(amount)
     self.ammo = math.min(self.ammo + amount, self.maxAmmo)
 end
 
+function Player:addBoost(amount)
+    self.boost = math.min(self.boost + amount, self.maxBoost)
+end
+
 function Player:update(dt)
     Player.super.update(self, dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
@@ -161,6 +165,10 @@ function Player:update(dt)
         if object:is(Ammo) then
             object:die()
             self:addAmmo(5)
+        end
+        if object:is(Boost) then
+            object:die()
+            self:addBoost(5)
         end
     end
 end

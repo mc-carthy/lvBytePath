@@ -27,5 +27,5 @@ function AmmoEffect:draw()
 end
 
 function AmmoEffect:destroy()
-    ProjectileDeathEffect.super.destroy(self)
+    AmmoEffect.super.destroy(self)
 end
