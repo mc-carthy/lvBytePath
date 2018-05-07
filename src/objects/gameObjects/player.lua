@@ -24,18 +24,34 @@ end
 
 function Player:shoot()
     local d = 1.2 * self.w
+    -- self.area:addGameObject(
+    --     'ShootEffect', 
+    --     self.x + d * math.cos(self.r),
+    --     self.y + d * math.sin(self.r),
+    --     { player = self, d = d }
+    -- )
+    -- for i = -1, 1 do
+    --     self.area:addGameObject(
+    --         'Projectile', 
+    --         self.x + d * math.cos(self.r),
+    --         self.y + d * math.sin(self.r),
+    --         { r = self.r + i * math.pi / 6}
+    --     )
+    -- end
     self.area:addGameObject(
         'ShootEffect', 
-        self.x + d * math.cos(self.r), 
+        self.x + d * math.cos(self.r),
         self.y + d * math.sin(self.r),
         { player = self, d = d }
     )
-    self.area:addGameObject(
-        'Projectile', 
-        self.x + d * math.cos(self.r), 
-        self.y + d * math.sin(self.r),
-        { r = self.r }
-    )
+    for i = -1, 1 do
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + d * math.cos(self.r + math.pi * i / 6),
+            self.y + d * math.sin(self.r + math.pi * i / 6),
+            { r = self.r }
+        )
+    end
 end
 
 function Player:update(dt)
