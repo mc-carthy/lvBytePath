@@ -9,6 +9,9 @@ function Stage:new()
     input:bind('x', function() 
         self.player:die()
     end)
+    input:bind('a', function() 
+        self.area:addGameObject('Ammo', Random(0, gw), Random(0, gh)) 
+    end)
 end
 
 function Stage:update(dt)

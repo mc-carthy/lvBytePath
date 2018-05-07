@@ -5,6 +5,7 @@ Timer = require('src.lib.enhancedTimer')
 Tbl = require('src.lib.moses')
 Camera = require('src.lib.camera')
 Physics = require('src.lib.windfield')
+Draft = require('src.lib.draft')()
 
 require('src.utils.utils')
 require('src.utils.globals')

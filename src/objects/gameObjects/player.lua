@@ -14,6 +14,10 @@ function Player:new(area, x, y, opts)
     self.baseMaxV = 100
     self.maxV = self.baseMaxV
     self.a = 100
+    self.maxHp = 100
+    self.Hp = self.maxHp
+    self.maxAmmo = 100
+    self.ammo = self.maxAmmo
     self.maxBoost = 100
     self.boost = self.maxBoost
     self.boostGainRate = 10

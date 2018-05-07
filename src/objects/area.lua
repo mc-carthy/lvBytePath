@@ -6,7 +6,7 @@ function Area:new(room)
 end
 
 function Area:addPhysicsWorld()
-    self.world = Physics.newWorld(0, 100, true)
+    self.world = Physics.newWorld(0, 0, true)
 end
 
 function Area:addGameObject(gameObjectType, x, y, opts)
