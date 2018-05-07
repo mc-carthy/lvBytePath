@@ -1,7 +1,7 @@
 -- require('src.utils.debug')
 Object = require('src.lib.classic')
 Input = require('src.lib.input')
-Timer = require('src.lib.timer')
+Timer = require('src.lib.enhancedTimer')
 Tbl = require('src.lib.moses')
 Camera = require('src.lib.camera')
 Physics = require('src.lib.windfield')
@@ -19,6 +19,9 @@ function love.load()
     input:bind('up', 'up')
     input:bind('down', 'down')
     camera = Camera()
+    timer = Timer()
+    slowAmount = 1
+    flashFrames = nil
     local objectFiles = {}
     local roomFiles = {}
     recursiveEnumerate('src/objects', objectFiles)
@@ -42,15 +45,25 @@ function love.load()
 end
     
 function love.update(dt)
-    camera:update(dt)
+    timer:update(dt * slowAmount)
+    camera:update(dt * slowAmount)
     if currentRoom and currentRoom.update then
-        currentRoom:update(dt)
+        currentRoom:update(dt * slowAmount)
     end
 end
 
 function love.draw()
     if currentRoom and currentRoom.draw then
         currentRoom:draw()
+    end
+    if flashFrames then 
+        flashFrames = flashFrames - 1
+        if flashFrames == -1 then flashFrames = nil end
+    end
+    if flashFrames then
+        love.graphics.setColor(backgroundColour)
+        love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
+        love.graphics.setColor(255, 255, 255)
     end
 end
 
@@ -68,6 +81,15 @@ function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
     end
+end
+
+function slow(amount, duration)
+    slowAmount = amount
+    timer:tween('slow', duration, _G, {slowAmount = 1}, 'in-out-cubic')
+end
+
+function flash(frames)
+    flashFrames = frames
 end
 
 function recursiveEnumerate(folder, fileList)

@@ -42,6 +42,9 @@ function Player:die()
     for i = 1, love.math.random(8, 12) do
         self.area:addGameObject('ExplodeParticle', self.x, self.y)
     end
+    slow(0.15, 1)
+    flash(10)
+    camera:shake(6, 60, 0.4)
     self.dead = true
 end
 
