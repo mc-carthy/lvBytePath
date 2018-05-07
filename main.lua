@@ -39,9 +39,6 @@ function love.load()
     input:bind('n', function()
         gotoRoom('Stage')
     end)
-    input:bind('d', function()
-        currentRoom:destroy()
-    end)
 end
     
 function love.update(dt)

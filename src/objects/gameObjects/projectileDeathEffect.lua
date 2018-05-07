@@ -15,11 +15,12 @@ function ProjectileDeathEffect:new(area, x, y, opts)
 end
 
 function ProjectileDeathEffect:update(dt)
-    self.timer:update(dt)
+    ProjectileDeathEffect.super.update(self, dt)
 end
 
 function ProjectileDeathEffect:draw()
     if self.first then love.graphics.setColor(defaultColour)
     elseif self.second then love.graphics.setColor(self.colour) end
     love.graphics.rectangle('fill', self.x - self.w / 2, self.y - self.w / 2, self.w, self.w)
+    love.graphics.setColor(defaultColour)
 end
