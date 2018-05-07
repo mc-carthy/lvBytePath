@@ -51,3 +51,12 @@ end
 function RandomFromTable(t)
     return t[love.math.random(1, #t)]
 end
+
+function AreRectanglesOverlapping(a, b)
+    return not (
+        a.x + a.w < b.x or
+        a.x > b.x + b.w or
+        a.y + a.h < b.y or
+        a.y > b.y + b.h
+    )
+end

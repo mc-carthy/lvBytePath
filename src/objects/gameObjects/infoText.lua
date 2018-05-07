@@ -4,19 +4,27 @@ function InfoText:new(area, x, y, opts)
     InfoText.super.new(self, area, x, y, opts)
     self.depth = 80
     self.font = fonts.m5x7_16
+    self.w, self.h = self.font:getWidth(self.text), self.font:getHeight()
+    local allInfoTexts = self.area:getGameObjects(function(o) 
+        if o:is(InfoText) and o.id ~= self.id then 
+            return true 
+        end 
+    end)
+    local function collidesWithOtherInfoText()
+        for _, infoText in ipairs(allInfoTexts) do
+            return AreRectanglesOverlapping(
+                { x = self.x, y = self.y, w = self.w, h = self.h }, 
+                { x = infoText.x, y = infoText.y, w = infoText.w, h = infoText.h }
+            )
+        end
+    end
+    while collidesWithOtherInfoText() do
+        self.x = self.x + RandomFromTable({ -1, 0, 1 }) * self.w
+        self.y = self.y + RandomFromTable({ -1, 0, 1 }) * self.h
+    end
     self.characters = {}
     self.backgroundColours = {}
     self.foregroundColours = {}
-
-    local defaultColours = { defaultColour, hpColour, ammoColour, boostColour, skillPointColour }
-    local negativeColours = {
-        { 255 - defaultColour[1], 255 - defaultColour[2], 255 - defaultColour[3] }, 
-        { 255 - hpColour[1], 255 - hpColour[2], 255 - hpColour[3] }, 
-        { 255 - ammoColour[1], 255 - ammoColour[2], 255 - ammoColour[3] }, 
-        { 255 - boostColour[1], 255 - boostColour[2], 255 - boostColour[3] }, 
-        { 255 - skillPointColour[1], 255 - skillPointColour[2], 255 - skillPointColour[3]}
-    }
-    self.allColours = Tbl.append(defaultColours, negativeColours)
 
     for i = 1, #self.text do
         table.insert(self.characters, self.text:utf8sub(i, i))
@@ -35,13 +43,13 @@ function InfoText:new(area, x, y, opts)
                     self.characters[i] = character
                 end
                 if love.math.random(1, 10) <= 1 then
-                    self.backgroundColours[i] = RandomFromTable(self.allColours)
+                    self.backgroundColours[i] = RandomFromTable(allColours)
                 else
                     self.backgroundColours[i] = nil
                 end
               
                 if love.math.random(1, 10) <= 2 then
-                    self.foregroundColours[i] = RandomFromTable(self.allColours)
+                    self.foregroundColours[i] = RandomFromTable(allColours)
                 else
                     self.foregroundColours[i] = nil
                 end

@@ -168,7 +168,7 @@ function Player:update(dt)
         end
         if object:is(Boost) then
             object:die()
-            self:addBoost(5)
+            self:addBoost(25)
         end
     end
 end
