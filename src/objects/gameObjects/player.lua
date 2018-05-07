@@ -30,6 +30,12 @@ function Player:shoot()
         self.y + d * math.sin(self.r),
         { player = self, d = d }
     )
+    self.area:addGameObject(
+        'Projectile', 
+        self.x + d * math.cos(self.r), 
+        self.y + d * math.sin(self.r),
+        { r = self.r }
+    )
 end
 
 function Player:update(dt)
@@ -42,10 +48,6 @@ function Player:update(dt)
 end
 
 function Player:draw()
-    -- PushRotate(self.x, self.y, math.pi)
     love.graphics.circle('line', self.x, self.y, self.w)
-    -- PushRotate(self.x + self.w * math.cos(self.r), self.y + self.w * math.sin(self.r), math.pi / 2)
-    -- PushRotate(self.x, self.y, math.pi / 2)
     love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
-    -- love.graphics.pop()
 end

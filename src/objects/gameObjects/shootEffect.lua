@@ -16,10 +16,8 @@ function ShootEffect:update(dt)
 end
 
 function ShootEffect:draw()
-    PushRotate(self.player.x, self.player.y, math.pi / 2)
     PushRotate(self.x, self.y, self.player.r + math.pi / 4)
     love.graphics.setColor(defaultColour)
     love.graphics.rectangle('fill', self.x - self.w / 2, self.y - self.w / 2, self.w, self.w)
-    love.graphics.pop()
     love.graphics.pop()
 end
