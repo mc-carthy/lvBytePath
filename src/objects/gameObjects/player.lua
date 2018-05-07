@@ -14,8 +14,11 @@ function Player:new(area, x, y, opts)
     self.max_v = 100
     self.a = 100
 
-    self.timer:every(0.24, function()
+    self.attack_speed = 1
+    self.timer:every(5, function() self.attack_speed = Random(1, 2) end)
+    self.timer:after(0.24 / self.attack_speed, function(f)
         self:shoot()
+        self.timer:after(0.24 / self.attack_speed, f)
     end)
 end
 
@@ -39,6 +42,10 @@ function Player:update(dt)
 end
 
 function Player:draw()
+    -- PushRotate(self.x, self.y, math.pi)
     love.graphics.circle('line', self.x, self.y, self.w)
+    -- PushRotate(self.x + self.w * math.cos(self.r), self.y + self.w * math.sin(self.r), math.pi / 2)
+    -- PushRotate(self.x, self.y, math.pi / 2)
     love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
+    -- love.graphics.pop()
 end

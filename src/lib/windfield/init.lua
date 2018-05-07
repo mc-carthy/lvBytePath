@@ -131,7 +131,7 @@ function World:draw(alpha)
             table.remove(self.query_debug_draw, i)
         end
     end
-    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.setColor(backgroundColour)
     love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     love.graphics.setColor(r, g, b, a)
 end

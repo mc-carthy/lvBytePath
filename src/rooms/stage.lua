@@ -26,8 +26,8 @@ function Stage:draw()
         camera:detach()
     love.graphics.setCanvas()
     
-    love.graphics.setColor(0, 0, 0, 255)
-    love.graphics.rectangle("fill", 0, 0, gw * sx, gw * sy)
+    -- love.graphics.setColor(0, 0, 0, 255)
+    -- love.graphics.rectangle("fill", 0, 0, gw * sx, gw * sy)
 
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setBlendMode('alpha', 'premultiplied')

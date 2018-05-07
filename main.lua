@@ -5,7 +5,9 @@ Timer = require('src.lib.timer')
 Tbl = require('src.lib.moses')
 Camera = require('src.lib.camera')
 Physics = require('src.lib.windfield')
+
 require('src.utils.utils')
+require('src.utils.globals')
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')

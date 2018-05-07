@@ -1,13 +1,5 @@
 ShootEffect = GameObject:extend()
 
-local function pushRotate(x, y, r, sx, sy)
-    love.graphics.push()
-    love.graphics.translate(x, y)
-    love.graphics.rotate(r or 0)
-    love.graphics.scale(sx or 1, sy or sx or 1)
-    love.graphics.translate(-x, -y)
-end
-
 function ShootEffect:new(area, x, y, opts)
     ShootEffect.super.new(self, area, x, y, opts)
     self.x, self.y = x, y
@@ -24,9 +16,10 @@ function ShootEffect:update(dt)
 end
 
 function ShootEffect:draw()
-    pushRotate(self.x, self.y, self.player.r + math.pi/4)
-    -- love.graphics.setColor(default_color)
-    love.graphics.setColor(255, 255, 255, 255)
+    PushRotate(self.player.x, self.player.y, math.pi / 2)
+    PushRotate(self.x, self.y, self.player.r + math.pi / 4)
+    love.graphics.setColor(defaultColour)
     love.graphics.rectangle('fill', self.x - self.w / 2, self.y - self.w / 2, self.w, self.w)
+    love.graphics.pop()
     love.graphics.pop()
 end
