@@ -32,7 +32,7 @@ function Player:new(area, x, y, opts)
     self.attackSpeed = 1
     self.shootTimer = 0
     self.shootCooldown = 0.24
-    self:setAttack('Rapid')
+    self:setAttack('Spread')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
@@ -137,6 +137,15 @@ function Player:shoot()
             self.x + d * math.cos(self.r),
             self.y + d * math.sin(self.r),
             { r = self.r, attack = self.attack }
+        )
+    elseif self.attack == 'Spread' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        local colour = self.ammo % 2 == 0 and defaultColour or RandomFromTable(allColours)
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + d * math.cos(self.r),
+            self.y + d * math.sin(self.r),
+            { r = self.r + Random(-math.pi / 8, math.pi / 8), attack = self.attack, colour = colour }
         )
     end
     if self.ammo <= 0 then
