@@ -32,7 +32,7 @@ function Player:new(area, x, y, opts)
     self.attackSpeed = 1
     self.shootTimer = 0
     self.shootCooldown = 0.24
-    self:setAttack('Neutral')
+    self:setAttack('Double')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
@@ -101,8 +101,26 @@ function Player:shoot()
             'Projectile', 
             self.x + d * math.cos(self.r),
             self.y + d * math.sin(self.r),
-            { r = self.r }
+            { r = self.r, attack = self.attack }
         )
+    elseif self.attack == 'Double' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + d * math.cos(self.r),
+            self.y + d * math.sin(self.r),
+            { r = self.r + math.pi / 12, attack = self.attack }
+        )
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + d * math.cos(self.r),
+            self.y + d * math.sin(self.r),
+            { r = self.r - math.pi / 12, attack = self.attack }
+        )
+    end
+    if self.ammo <= 0 then
+        self:setAttack('Neutral')
+        self.ammo = self.maxAmmo
     end
 end
 
