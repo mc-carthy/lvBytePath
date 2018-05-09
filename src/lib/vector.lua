@@ -207,6 +207,9 @@ function vector:trimmed(maxLen)
 	return self:clone():trimInplace(maxLen)
 end
 
+function vector:angle()
+    return atan2(self.y, self.x)
+end
 
 -- the module
 return setmetatable({
