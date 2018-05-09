@@ -24,6 +24,9 @@ function Stage:new()
     input:bind('s', function() 
         self.area:addGameObject('SkillPoint', Random(0, gw), Random(0, gh)) 
     end)
+    input:bind('1', function() 
+        self.area:addGameObject('Attack', Random(0, gw), Random(0, gh)) 
+    end)
 end
 
 function Stage:update(dt)

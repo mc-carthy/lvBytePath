@@ -279,6 +279,10 @@ function Player:update(dt)
             object:die()
             self:addSp(1)
         end
+        if object:is(Attack) then
+            self:setAttack(object.attack)
+            object:die()
+        end
     end
 end
 
