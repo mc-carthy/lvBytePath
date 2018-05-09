@@ -17,8 +17,9 @@ allColours = Tbl.append(defaultColours, negativeColours)
 
 attacks = {
     ['Neutral'] = { cooldown = 0.24, ammo = 0, abbreviation = 'N', colour = defaultColour },
-    ['Double'] = { cooldown = 0.32, ammo = 2, abbreviation = '2', colour = ammoColour },
-    ['Triple'] = { cooldown = 0.32, ammo = 3, abbreviation = '3', colour = boostColour },
-    ['Rapid'] = { cooldown = 0.12, ammo = 1, abbreviation = 'R', colour = defaultColour },
+    ['Double'] = { cooldown = 0.32, ammo = 2, abbreviation = '2x', colour = ammoColour },
+    ['Triple'] = { cooldown = 0.32, ammo = 3, abbreviation = '3x', colour = boostColour },
+    ['Rapid'] = { cooldown = 0.12, ammo = 1, abbreviation = 'RP', colour = defaultColour },
     ['Spread'] = { cooldown = 0.16, ammo = 1, abbreviation = 'RS', colour = defaultColour },
+    ['Back'] = { cooldown = 0.32, ammo = 2, abbreviation = 'BK', colour = skillPointColour },
 }

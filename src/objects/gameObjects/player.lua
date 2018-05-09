@@ -32,7 +32,7 @@ function Player:new(area, x, y, opts)
     self.attackSpeed = 1
     self.shootTimer = 0
     self.shootCooldown = 0.24
-    self:setAttack('Spread')
+    self:setAttack('Back')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
@@ -108,14 +108,14 @@ function Player:shoot()
         self.ammo = self.ammo - attacks[self.attack].ammo
         self.area:addGameObject(
             'Projectile', 
-            self.x + d * math.cos(self.r),
-            self.y + d * math.sin(self.r),
+            self.x + 1.5 * d * math.cos(self.r + math.pi / 12),
+            self.y + 1.5 * d * math.sin(self.r + math.pi / 12),
             { r = self.r + math.pi / 12, attack = self.attack }
         )
         self.area:addGameObject(
             'Projectile', 
-            self.x + d * math.cos(self.r),
-            self.y + d * math.sin(self.r),
+            self.x + 1.5 * d * math.cos(self.r - math.pi / 12),
+            self.y + 1.5 * d * math.sin(self.r - math.pi / 12),
             { r = self.r - math.pi / 12, attack = self.attack }
         )
     elseif self.attack == 'Triple' then
@@ -146,6 +146,20 @@ function Player:shoot()
             self.x + d * math.cos(self.r),
             self.y + d * math.sin(self.r),
             { r = self.r + Random(-math.pi / 8, math.pi / 8), attack = self.attack, colour = colour }
+        )
+    elseif self.attack == 'Back' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + d * math.cos(self.r),
+            self.y + d * math.sin(self.r),
+            { r = self.r, attack = self.attack}
+        )
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + 1.5 * d * math.cos(self.r - math.pi),
+            self.y + 1.5 * d * math.sin(self.r - math.pi),
+            { r = self.r - math.pi, attack = self.attack}
         )
     end
     if self.ammo <= 0 then
