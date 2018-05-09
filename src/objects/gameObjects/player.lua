@@ -126,6 +126,10 @@ function Player:addHp(amount)
     self.boost = math.min(self.hp + amount, self.maxHp)
 end
 
+function Player:addSp(amount)
+    sp = sp + amount
+end
+
 function Player:update(dt)
     Player.super.update(self, dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
@@ -177,6 +181,10 @@ function Player:update(dt)
         if object:is(Health) then
             object:die()
             self:addHp(25)
+        end
+        if object:is(SkillPoint) then
+            object:die()
+            self:addSp(1)
         end
     end
 end

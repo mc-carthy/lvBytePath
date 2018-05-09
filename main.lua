@@ -34,7 +34,6 @@ function love.load()
     requireFiles(objectFiles)
     requireFiles(roomFiles)
     gotoRoom('Stage')
-    input:bind('s', function() camera:shake(4, 60, 1) end)
     input:bind('m', function()
         print("Before collection: " .. collectgarbage("count")/1024)
         collectgarbage()
@@ -47,6 +46,7 @@ function love.load()
     input:bind('n', function()
         gotoRoom('Stage')
     end)
+    sp = 0
 end
     
 function love.update(dt)
