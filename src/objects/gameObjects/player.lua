@@ -32,7 +32,7 @@ function Player:new(area, x, y, opts)
     self.attackSpeed = 1
     self.shootTimer = 0
     self.shootCooldown = 0.24
-    self:setAttack('Back')
+    self:setAttack('Side')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
@@ -160,6 +160,26 @@ function Player:shoot()
             self.x + 1.5 * d * math.cos(self.r - math.pi),
             self.y + 1.5 * d * math.sin(self.r - math.pi),
             { r = self.r - math.pi, attack = self.attack}
+        )
+    elseif self.attack == 'Side' then
+        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + d * math.cos(self.r),
+            self.y + d * math.sin(self.r),
+            { r = self.r, attack = self.attack}
+        )
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + 1.5 * d * math.cos(self.r - math.pi / 2),
+            self.y + 1.5 * d * math.sin(self.r - math.pi / 2),
+            { r = self.r - math.pi / 2, attack = self.attack}
+        )
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + 1.5 * d * math.cos(self.r + math.pi / 2),
+            self.y + 1.5 * d * math.sin(self.r + math.pi / 2),
+            { r = self.r + math.pi / 2, attack = self.attack}
         )
     end
     if self.ammo <= 0 then

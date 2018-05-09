@@ -22,4 +22,5 @@ attacks = {
     ['Rapid'] = { cooldown = 0.12, ammo = 1, abbreviation = 'RP', colour = defaultColour },
     ['Spread'] = { cooldown = 0.16, ammo = 1, abbreviation = 'RS', colour = defaultColour },
     ['Back'] = { cooldown = 0.32, ammo = 2, abbreviation = 'BK', colour = skillPointColour },
+    ['Side'] = { cooldown = 0.32, ammo = 3, abbreviation = 'SI', colour = boostColour },
 }
