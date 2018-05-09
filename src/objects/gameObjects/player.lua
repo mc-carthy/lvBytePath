@@ -30,6 +30,9 @@ function Player:new(area, x, y, opts)
     self.trailColour = skillPointColour
 
     self.attackSpeed = 1
+    self.shootTimer = 0
+    self.shootCooldown = 0.24
+    self:setAttack('Neutral')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
@@ -48,11 +51,6 @@ function Player:new(area, x, y, opts)
             ) 
         end
     end)
-    self.timer:after(0.24 / self.attackSpeed, function(f)
-        self:shoot()
-        self.timer:after(0.24 / self.attackSpeed, f)
-    end)
-
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -84,6 +82,12 @@ function Player:new(area, x, y, opts)
     end
 end
 
+function Player:setAttack(attack)
+    self.attack = attack
+    self.shootCooldown = attacks[attack].cooldown
+    self.ammo = self.maxAmmo
+end
+
 function Player:shoot()
     local d = 1.2 * self.w
     self.area:addGameObject(
@@ -92,12 +96,14 @@ function Player:shoot()
         self.y + d * math.sin(self.r),
         { player = self, d = d }
     )
-    self.area:addGameObject(
-        'Projectile', 
-        self.x + d * math.cos(self.r),
-        self.y + d * math.sin(self.r),
-        { r = self.r }
-    )
+    if self.attack == 'Neutral' then
+        self.area:addGameObject(
+            'Projectile', 
+            self.x + d * math.cos(self.r),
+            self.y + d * math.sin(self.r),
+            { r = self.r }
+        )
+    end
 end
 
 function Player:die()
@@ -135,6 +141,11 @@ function Player:update(dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
+    self.shootTimer = self.shootTimer + dt
+    if self.shootTimer > self.shootCooldown then
+        self.shootTimer = 0
+        self:shoot()
+    end
 
     self.boost = math.min(self.boost + self.boostGainRate * dt, self.maxBoost)
     self.maxV = self.baseMaxV

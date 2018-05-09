@@ -14,3 +14,7 @@ negativeColours = {
     { 255 - skillPointColour[1], 255 - skillPointColour[2], 255 - skillPointColour[3]}
 }
 allColours = Tbl.append(defaultColours, negativeColours)
+
+attacks = {
+    ['Neutral'] = { cooldown = 0.24, ammo = 0, abbreviation = 'N', colour = defaultColour },
+}
