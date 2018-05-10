@@ -32,6 +32,7 @@ end
 
 function Rock:die()
     self.area:addGameObject('EnemyDeathEffect', self.x, self.y, { colour = hpColour, w = 3 * self.w, h = 3 * self.h })
+    self.area:addGameObject('Ammo', self.x, self.y)
     self.dead = true
 end
 

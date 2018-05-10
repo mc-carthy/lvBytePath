@@ -2,7 +2,8 @@ EnemyDeathEffect = GameObject:extend()
 
 function EnemyDeathEffect:new(area, x, y, opts)
     EnemyDeathEffect.super.new(self, area, x, y, opts)
-
+    
+    self.depth = 75
     self.first = true
     self.timer:after(0.1, function()
         self.first = false
