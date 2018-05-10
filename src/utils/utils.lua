@@ -77,3 +77,16 @@ function ChanceList(...)
         end
     }
 end
+
+function CreateIrregularPolygon(size, numPoints)
+    local numPoints = numPoints or 8
+    local points = {}
+    for i = 1, numPoints do
+        local angleInterval = 2 * math.pi / numPoints
+        local distance = size + Random(-size / 4, size / 4)
+        local angle = (i - 1) * angleInterval + Random(-angleInterval / 4, angleInterval / 4)
+        table.insert(points, distance * math.cos(angle))
+        table.insert(points, distance * math.sin(angle))
+    end
+    return points
+end
