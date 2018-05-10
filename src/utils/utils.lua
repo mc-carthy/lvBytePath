@@ -67,7 +67,7 @@ function ChanceList(...)
         chanceDefinitions = {...},
         next = function(self)
             if #self.chanceList == 0 then
-                for _, chanceDefinition in self.chanceDefinitions do
+                for _, chanceDefinition in pairs(self.chanceDefinitions) do
                     for i = 1, chanceDefinition[2] do
                         table.insert(self.chanceList, chanceDefinition[1])
                     end

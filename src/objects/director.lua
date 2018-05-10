@@ -1,7 +1,8 @@
-Director = Objext:extend()
+Director = Object:extend()
 
 function Director:new(stage)
     self.stage = stage
+    self.timer = Timer()
     self.difficulty = 1
     self.roundTime = 22
     self.roundTimer = 0
@@ -17,6 +18,44 @@ function Director:new(stage)
         ['Rock'] = 1,
         ['Shooter'] = 2,
     }
+    self.enemySpawnChance = {
+        [1] = ChanceList({ 'Rock', 1 }),
+        [2] = ChanceList({ 'Rock', 8 }, { 'Shooter', 4 }),
+        [3] = ChanceList({ 'Rock', 8 }, { 'Shooter', 8 }),
+        [4] = ChanceList({ 'Rock', 4 }, { 'Shooter', 8 }),
+    }
+    for i = 5, 1024 do
+        self.enemySpawnChance[i] = ChanceList(
+      	    { 'Rock', love.math.random(2, 12) }, 
+      	    { 'Shooter', love.math.random(2, 12) }
+    	)
+    end
+
+    self:setEnemySpawnForThisRound()
+    self.stage.area:addGameObject(Attack)
+end
+
+function Director:setEnemySpawnForThisRound()
+    local points = self.difficultyToPoints[self.difficulty]
+
+    local enemyList = {}
+    while points > 0 do
+        local enemy = self.enemySpawnChance[self.difficulty]:next()
+        points = points - self.enemyToPoints[enemy]
+        table.insert(enemyList, enemy)
+    end
+
+    local enemySpawnTime = {}
+    for i = 1, #enemyList do
+        enemySpawnTime[i] = Random(0, self.roundTime)
+    end
+    table.sort(enemySpawnTime, function(a, b) return a < b end)
+
+    for i = 1, #enemyList do
+        self.timer:after(enemySpawnTime[i], function() 
+            self.stage.area:addGameObject(enemyList[i])
+        end)
+    end
 end
 
 function Director:update(dt)
