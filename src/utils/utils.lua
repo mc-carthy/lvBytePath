@@ -60,3 +60,20 @@ function AreRectanglesOverlapping(a, b)
         a.y > b.y + b.h
     )
 end
+
+function ChanceList(...)
+    return {
+        chanceList = {},
+        chanceDefinitions = {...},
+        next = function(self)
+            if #self.chanceList == 0 then
+                for _, chanceDefinition in self.chanceDefinitions do
+                    for i = 1, chanceDefinition[2] do
+                        table.insert(self.chanceList, chanceDefinition[1])
+                    end
+                end
+            end
+            return table.remove(self.chanceList, love.math.random(1, #self.chanceList))
+        end
+    }
+end
