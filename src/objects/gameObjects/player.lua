@@ -17,6 +17,8 @@ function Player:new(area, x, y, opts)
     self.a = 100
     self.maxHp = 100
     self.hp = self.maxHp
+    self.invincible = false
+    self.invisible = false
     self.maxAmmo = 100
     self.ammo = self.maxAmmo
     self.maxBoost = 100
@@ -32,7 +34,7 @@ function Player:new(area, x, y, opts)
     self.attackSpeed = 1
     self.shootTimer = 0
     self.shootCooldown = 0.24
-    self:setAttack('Side')
+    self:setAttack('Neutral')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
@@ -188,6 +190,38 @@ function Player:shoot()
     end
 end
 
+function Player:hit(damage)
+    if self.invincible then return end
+    local damage = damage or 10
+    local flashTime = 0.04
+    local invincibilityTime = 2
+    self:addHp(-damage)
+
+    for i = 1, love.math.random(4, 8) do
+        self.area:addGameObject('ExplodeParticle', self.x, self.y)
+    end
+
+    if damage >= 30 then
+        self.invincible = true
+        self.timer:after(invincibilityTime, function() self.invincible = false end)
+        for i = 1, math.floor(invincibilityTime / flashTime) do
+            self.timer:after((i - 1) * flashTime, function() 
+                self.invisible = not self.invisible 
+            end)
+            if i >= math.floor(invincibilityTime / flashTime) then
+                self.invisible = false
+            end
+        end
+        camera:shake(6, 0.2, 0.4)
+        flash(3)
+        slow(0.25, 0.5)
+    else
+        camera:shake(6, 0.1, 0.4)
+        flash(2)
+        slow(0.75, 0.25)
+    end
+end
+
 function Player:die()
     for i = 1, love.math.random(8, 12) do
         self.area:addGameObject('ExplodeParticle', self.x, self.y)
@@ -211,7 +245,10 @@ function Player:addBoost(amount)
 end
 
 function Player:addHp(amount)
-    self.boost = math.min(self.hp + amount, self.maxHp)
+    self.hp = math.min(self.hp + amount, self.maxHp)
+    if self.hp <= 0 then
+        self:die()
+    end
 end
 
 function Player:addSp(amount)
@@ -284,11 +321,19 @@ function Player:update(dt)
             object:die()
         end
     end
+    if self.collider:enter('Enemy') then
+        local collisionData = self.collider:getEnterCollisionData('Enemy')
+        local object = collisionData.collider:getObject()
+        if object then
+            self:hit(30)
+        end
+    end
 end
 
 function Player:draw()
     -- love.graphics.circle('line', self.x, self.y, self.w)
     -- love.graphics.line(self.x, self.y, self.x + 2*self.w*math.cos(self.r), self.y + 2*self.w*math.sin(self.r))
+    if self.invisible then return end
     PushRotate(self.x, self.y, self.r)
         love.graphics.setColor(defaultColour)
         for _, v in pairs(self.polygons) do
