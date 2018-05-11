@@ -103,8 +103,61 @@ function Stage:draw()
             0, 1, 1,
     	    math.floor(self.font:getWidth(hp .. '/' .. maxHp) / 2), math.floor(self.font:getHeight() / 2)
         )
+
+        -- Ammo
+        local r, g, b = unpack(ammoColour)
+        local ammo, maxAmmo = self.player.ammo, self.player.maxAmmo
+        love.graphics.setColor(r, g, b)
+        love.graphics.rectangle('fill', gw / 2 - 52, 16, 48 * (ammo / maxAmmo), 4)
+        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.rectangle('line', gw / 2 - 52, 16, 48, 4)
+        love.graphics.print(
+            'AMMO', 
+            gw / 2 - 52 + 24, 26, 
+            0, 1, 1,
+            math.floor(self.font:getWidth('AMMO') / 2), math.floor(self.font:getHeight() / 2)
+        )
+        love.graphics.print(
+            ammo .. '/' .. maxAmmo, 
+            gw / 2 - 52 + 24, 6, 
+            0, 1, 1,
+    	    math.floor(self.font:getWidth(ammo .. '/' .. maxAmmo) / 2), math.floor(self.font:getHeight() / 2)
+        )
         
-	love.graphics.setCanvas()
+        -- Boost
+        local r, g, b = unpack(boostColour)
+        local boost, maxBoost = self.player.boost, self.player.maxBoost
+        love.graphics.setColor(r, g, b)
+        love.graphics.rectangle('fill', gw / 2 + 4, 16, 48 * (boost / maxBoost), 4)
+        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.rectangle('line', gw / 2 + 4, 16, 48, 4)
+        love.graphics.print(
+            'BOOST', 
+            gw / 2 + 4 + 24, 26, 
+            0, 1, 1,
+            math.floor(self.font:getWidth('BOOST') / 2), math.floor(self.font:getHeight() / 2)
+        )
+        love.graphics.print(
+            math.floor(boost) .. '/' .. math.floor(maxBoost), 
+            gw / 2 + 4 + 24, 6, 
+            0, 1, 1,
+    	    math.floor(self.font:getWidth(math.floor(boost) .. '/' .. math.floor(maxBoost)) / 2), math.floor(self.font:getHeight() / 2)
+        )
+
+        -- Cycle
+        local r, g, b = unpack(defaultColour)
+        local cycle, cycleCooldown = self.player.tickTimer, self.player.tickTime
+        love.graphics.setColor(r, g, b)
+        love.graphics.rectangle('fill', gw / 2 + 4, gh - 16, 48 * (cycle / cycleCooldown), 4)
+        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.rectangle('line', gw / 2 + 4, gh - 16, 48, 4)
+        love.graphics.print(
+            'CYCLE', 
+            gw / 2 + 4 + 24, gh - 26, 
+            0, 1, 1,
+            math.floor(self.font:getWidth('CYCLE') / 2), math.floor(self.font:getHeight() / 2)
+        )
+
         love.graphics.setColor(255, 255, 255)
     love.graphics.setCanvas()
     

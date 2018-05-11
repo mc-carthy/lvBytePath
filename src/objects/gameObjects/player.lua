@@ -28,6 +28,8 @@ function Player:new(area, x, y, opts)
     self.canBoost = true
     self.boostTimer = 0
     self.boostCooldown = 2
+    self.tickTimer = 0
+    self.tickTime = 5
 
     self.trailColour = skillPointColour
 
@@ -36,7 +38,6 @@ function Player:new(area, x, y, opts)
     self.shootCooldown = 0.24
     self:setAttack('Neutral')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
-    self.timer:every(5, function() self:tick() end)
     self.timer:every(0.01, function()
         if self.ship == 'Fighter' then
             self.area:addGameObject(
@@ -258,6 +259,13 @@ end
 
 function Player:update(dt)
     Player.super.update(self, dt)
+    
+    self.tickTimer = self.tickTimer + dt
+    if self.tickTimer > self.tickTime then
+        self:tick()
+        self.tickTimer = 0
+    end
+    
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
