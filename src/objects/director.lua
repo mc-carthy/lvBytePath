@@ -19,7 +19,7 @@ function Director:new(stage)
         ['Shooter'] = 2,
     }
     self.enemySpawnChance = {
-        [1] = ChanceList({ 'Rock', 1 }),
+        [1] = ChanceList({ 'Shooter', 1 }),
         [2] = ChanceList({ 'Rock', 8 }, { 'Shooter', 4 }),
         [3] = ChanceList({ 'Rock', 8 }, { 'Shooter', 8 }),
         [4] = ChanceList({ 'Rock', 4 }, { 'Shooter', 8 }),
