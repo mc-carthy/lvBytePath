@@ -22,6 +22,11 @@ function Projectile:update(dt)
         local collisionData = self.collider:getEnterCollisionData('Enemy')
         local object = collisionData.collider:getObject()
         if object then
+            if object:is(Rock) then
+                currentRoom.score = currentRoom.score + 100
+            elseif object:is(Shooter) then
+                currentRoom.score = currentRoom.score + 150
+            end
             object:hit(self.damage)
             self:die()
         end

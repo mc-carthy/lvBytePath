@@ -12,6 +12,7 @@ function Stage:new()
     self.mainCanvas = love.graphics.newCanvas(gw, gh)
     self.player = self.area:addGameObject('Player', gw/2, gh/2)
     self.director = Director(self)
+    self.score = 0
     input:bind('x', function() 
         self.player:die()
     end)

@@ -304,10 +304,12 @@ function Player:update(dt)
         if object:is(Ammo) then
             object:die()
             self:addAmmo(5)
+            currentRoom.score = currentRoom.score + 50
         end
         if object:is(Boost) then
             object:die()
             self:addBoost(25)
+            currentRoom.score = currentRoom.score + 150
         end
         if object:is(Health) then
             object:die()
@@ -316,10 +318,12 @@ function Player:update(dt)
         if object:is(SkillPoint) then
             object:die()
             self:addSp(1)
+            currentRoom.score = currentRoom.score + 250
         end
         if object:is(Attack) then
             self:setAttack(object.attack)
             object:die()
+            currentRoom.score = currentRoom.score + 500
         end
     end
     if self.collider:enter('Enemy') then
