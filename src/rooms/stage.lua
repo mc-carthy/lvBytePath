@@ -66,6 +66,7 @@ function Stage:draw()
         camera:detach()
 
         love.graphics.setFont(self.font)
+        -- Score
         love.graphics.setColor(defaultColour)
         love.graphics.print(
             self.score, 
@@ -73,6 +74,8 @@ function Stage:draw()
             0, 1, 1,
             math.floor(self.font:getWidth(self.score) / 2), self.font:getHeight() / 2
         )
+
+        -- Skill point
         love.graphics.setColor(skillPointColour)
         love.graphics.print(
             sp, 
@@ -80,6 +83,22 @@ function Stage:draw()
             0, 1, 1,
             math.floor(self.font:getWidth(self.score) / 2), self.font:getHeight() / 2
         )
+
+        -- HP
+        local r, g, b = unpack(hpColour)
+        local hp, maxHp = self.player.hp, self.player.maxHp
+        love.graphics.setColor(r, g, b)
+        love.graphics.rectangle('fill', gw / 2 - 52, gh - 16, 48 * (hp / maxHp), 4)
+        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.rectangle('line', gw / 2 - 52, gh - 16, 48, 4)
+        love.graphics.print(
+            'HP', 
+            gw / 2 - 52 + 24, gh - 24, 
+            0, 1, 1,
+            math.floor(self.font:getWidth('HP') / 2), math.floor(self.font:getHeight() / 2)
+        )
+        
+	love.graphics.setCanvas()
         love.graphics.setColor(255, 255, 255)
     love.graphics.setCanvas()
     
