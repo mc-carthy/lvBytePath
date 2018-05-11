@@ -97,6 +97,12 @@ function Stage:draw()
             0, 1, 1,
             math.floor(self.font:getWidth('HP') / 2), math.floor(self.font:getHeight() / 2)
         )
+        love.graphics.print(
+            hp .. '/' .. maxHp, 
+            gw / 2 - 52 + 24, gh - 6, 
+            0, 1, 1,
+    	    math.floor(self.font:getWidth(hp .. '/' .. maxHp) / 2), math.floor(self.font:getHeight() / 2)
+        )
         
 	love.graphics.setCanvas()
         love.graphics.setColor(255, 255, 255)
