@@ -12,6 +12,7 @@ function Stage:new()
     self.mainCanvas = love.graphics.newCanvas(gw, gh)
     self.player = self.area:addGameObject('Player', gw/2, gh/2)
     self.director = Director(self)
+    self.font = fonts.m5x7_16
     self.score = 0
     input:bind('x', function() 
         self.player:die()
@@ -63,6 +64,16 @@ function Stage:draw()
         camera:attach(0, 0, gw * sx, gh * sy)
         self.area:draw()
         camera:detach()
+
+        love.graphics.setFont(self.font)
+        love.graphics.setColor(defaultColour)
+        love.graphics.print(
+            self.score, 
+            gw - 20, 10, 
+            0, 1, 1,
+            math.floor(self.font:getWidth(self.score) / 2), self.font:getHeight() / 2
+        )
+        love.graphics.setColor(255, 255, 255)
     love.graphics.setCanvas()
     
     -- love.graphics.setColor(0, 0, 0, 255)
