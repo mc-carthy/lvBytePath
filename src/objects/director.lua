@@ -31,18 +31,27 @@ function Director:new(stage)
     	)
     end
 
+    self.resourceSpawnChance = ChanceList( { 'Boost', 28 }, { 'Health', 14 }, { 'SkillPoint', 58 } )
+    self.timer:every(16, function()
+        self.stage.area:addGameObject(self.resourceSpawnChance:next(), Random(0, gw), Random(0, gh))
+    end)
+    self.timer:every(30, function()
+        self.stage.area:addGameObject('Attack', Random(0, gw), Random(0, gh)) 
+    end)
+
     self:setEnemySpawnForThisRound()
-    self.stage.area:addGameObject('Attack', Random(0, gw), Random(0, gh)) 
 end
 
 function Director:setEnemySpawnForThisRound()
     local points = self.difficultyToPoints[self.difficulty]
 
     local enemyList = {}
-    while points > 0 do
+    local i = 0
+    while points > 0 and i < 1000 do
         local enemy = self.enemySpawnChance[self.difficulty]:next()
         points = points - self.enemyToPoints[enemy]
         table.insert(enemyList, enemy)
+        i = i + 1
     end
 
     local enemySpawnTime = {}
