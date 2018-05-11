@@ -43,9 +43,9 @@ function love.load()
         for k, v in pairs(counts) do print(k, v) end
         print("-------------------------------------")
     end)
-    input:bind('n', function()
-        gotoRoom('Stage')
-    end)
+    -- input:bind('n', function()
+    --     gotoRoom('Stage')
+    -- end)
     sp = 0
 end
     
@@ -74,6 +74,7 @@ end
 
 function gotoRoom(roomType, ...)
     if currentRoom and currentRoom.destroy then currentRoom:destroy() end
+    currentRoom = nil
     currentRoom = _G[roomType](...)
 end
 

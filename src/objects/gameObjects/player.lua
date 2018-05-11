@@ -230,6 +230,7 @@ function Player:die()
     flash(10)
     camera:shake(6, 60, 0.4)
     self.dead = true
+    currentRoom:finish()
 end
 
 function Player:tick()

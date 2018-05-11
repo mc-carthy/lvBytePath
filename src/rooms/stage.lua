@@ -33,6 +33,17 @@ function Stage:new()
     input:bind('r', function() 
         self.area:addGameObject('Rock', Random(0, gw), Random(0, gh)) 
     end)
+    input:bind('z', function() 
+        self.timer:after(1, function()
+            gotoRoom('Stage')
+        end)
+    end)
+end
+
+function Stage:finish()
+    self.timer:after(1, function()
+        gotoRoom('Stage')
+    end)
 end
 
 function Stage:update(dt)
@@ -40,7 +51,9 @@ function Stage:update(dt)
     self.timer:update(dt)
     camera.smoother = Camera.smooth.damped(5)
     camera:lockPosition(dt, gw, gh)
-    self.area:update(dt)
+    if self.area then
+        self.area:update(dt)
+    end
 end
 
 function Stage:draw()
@@ -63,4 +76,5 @@ end
 function Stage:destroy()
     self.area:destroy()
     self.area = nil
+    self.player = nil
 end
