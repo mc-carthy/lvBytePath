@@ -4,7 +4,6 @@ function EnemyProjectile:new(area, x, y, opts)
     EnemyProjectile.super.new(self, area, x, y, opts)
     self.s = opts.s or 2.5
     self.v = opts.v or 200
-    self.colour = opts.colour or attacks[self.attack].colour
     self.damage = opts.damage or 10
 
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
@@ -27,10 +26,10 @@ function EnemyProjectile:update(dt)
         end
     end
     if self.collider:enter('Projectile') then
-        local collisionData = self.collider:getEnterCollisionData('Player')
+        local collisionData = self.collider:getEnterCollisionData('Projectile')
         local object = collisionData.collider:getObject()
         if object then
-            object:hit(self.damage)
+            object:die()
             self:die()
         end
     end
@@ -43,7 +42,7 @@ end
 
 function EnemyProjectile:draw()
     -- love.graphics.circle('line', self.x, self.y, self.s)
-    love.graphics.setColor(self.colour)
+    love.graphics.setColor(hpColour)
     
     PushRotate(self.x, self.y, Vector(self.collider:getLinearVelocity()):angle()) 
     love.graphics.setLineWidth(self.s - self.s / 4)

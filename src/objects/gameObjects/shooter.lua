@@ -30,7 +30,11 @@ function Shooter:new(area, x, y, opts)
             { shooter = self, colour = hpColour, duration = 1 }
         )
         self.timer:after(1, function()
-        
+            self.area:addGameObject(
+                'EnemyProjectile', 
+                self.x + 1.4 * self.w * math.cos(self.collider:getAngle()), 
+                self.y + 1.4 * self.w * math.sin(self.collider:getAngle()), 
+                { r = math.atan2(currentRoom.player.y - self.y, currentRoom.player.x - self.x), v = Random(80, 100), s = 3.5 })
         end)
     end)
 end
