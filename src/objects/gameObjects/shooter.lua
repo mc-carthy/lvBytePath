@@ -21,6 +21,18 @@ function Shooter:new(area, x, y, opts)
     self.collider:applyAngularImpulse(Random(-100, 100))
     self.hp = 100
     self.hitFlash = false
+
+    self.timer:every(Random(3, 5), function() 
+        self.area:addGameObject(
+            'PreAttackEffect',
+            self.x + 1.4 * self.w * math.cos(self.collider:getAngle()), 
+            self.y + 1.4 * self.w * math.sin(self.collider:getAngle()), 
+            { shooter = self, colour = hpColour, duration = 1 }
+        )
+        self.timer:after(1, function()
+        
+        end)
+    end)
 end
 
 function Shooter:hit(damage)
