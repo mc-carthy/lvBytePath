@@ -28,9 +28,8 @@ function Player:new(area, x, y, opts)
     self.canBoost = true
     self.boostTimer = 0
     self.boostCooldown = 2
-    self.tickTimer = 0
-    self.tickTime = 5
-
+    self.cycleTimer = 0
+    self.cycleCooldown = 5
     self.trailColour = skillPointColour
 
     self.attackSpeed = 1
@@ -54,6 +53,10 @@ function Player:new(area, x, y, opts)
             ) 
         end
     end)
+
+    self.hpMultiplier = 1
+    self.ammoMultiplier = 1
+    self.boostMultiplier = 1
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -83,6 +86,17 @@ function Player:new(area, x, y, opts)
             0, self.w,
         }
     end
+
+    self:setStats()
+end
+
+function Player:setStats()
+    self.maxHp = self.maxHp * self.hpMultiplier
+    self.hp = self.maxHp
+    self.maxAmmo = self.maxAmmo * self.ammoMultiplier
+    self.ammo = self.maxAmmo
+    self.maxBoost = self.maxBoost * self.boostMultiplier
+    self.boost = self.maxBoost
 end
 
 function Player:setAttack(attack)
@@ -234,7 +248,7 @@ function Player:die()
     currentRoom:finish()
 end
 
-function Player:tick()
+function Player:cycle()
     self.area:addGameObject('TickEffect', self.x, self.y, { parent = self })
 end
 
@@ -260,10 +274,10 @@ end
 function Player:update(dt)
     Player.super.update(self, dt)
     
-    self.tickTimer = self.tickTimer + dt
-    if self.tickTimer > self.tickTime then
-        self:tick()
-        self.tickTimer = 0
+    self.cycleTimer = self.cycleTimer + dt
+    if self.cycleTimer > self.cycleCooldown then
+        self:cycle()
+        self.cycleTimer = 0
     end
     
     if input:down('left') then self.r = self.r - self.rv * dt end

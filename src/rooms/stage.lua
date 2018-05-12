@@ -146,7 +146,7 @@ function Stage:draw()
 
         -- Cycle
         local r, g, b = unpack(defaultColour)
-        local cycle, cycleCooldown = self.player.tickTimer, self.player.tickTime
+        local cycle, cycleCooldown = self.player.cycleTimer, self.player.cycleCooldown
         love.graphics.setColor(r, g, b)
         love.graphics.rectangle('fill', gw / 2 + 4, gh - 16, 48 * (cycle / cycleCooldown), 4)
         love.graphics.setColor(r - 32, g - 32, b - 32)
