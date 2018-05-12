@@ -78,7 +78,7 @@ function Stage:draw()
         -- Skill point
         love.graphics.setColor(skillPointColour)
         love.graphics.print(
-            sp, 
+            sp .. ' SP', 
             40, 10, 
             0, 1, 1,
             math.floor(self.font:getWidth(self.score) / 2), self.font:getHeight() / 2

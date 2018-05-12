@@ -62,7 +62,8 @@ function Player:new(area, x, y, opts)
     self.boostMultiplier = 1
     self.flatBoost = 0
 
-    self.launchHomingProjectileOnAmmoPickupChance = 50
+    self.launchHomingProjectileOnAmmoPickupChance = 0
+    self.regainHpOnAmmoPickupChance = 0
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -277,6 +278,10 @@ function Player:onAmmoPickup()
             self.y + d*math.sin(self.r), 
       	    { r = self.r, attack = 'Homing' })
         self.area:addGameObject('InfoText', self.x, self.y, { text = 'Homing Projectile!' })
+    end
+    if self.chances.regainHpOnAmmoPickupChance:next() then
+        self:addHp(25)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'HP Regain!', colour = hpColour })
     end
 end
 
