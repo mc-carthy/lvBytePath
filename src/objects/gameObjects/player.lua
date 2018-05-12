@@ -37,6 +37,16 @@ function Player:new(area, x, y, opts)
     self.shootCooldown = 0.24
     self:setAttack('Neutral')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
+    
+    self.attackSpeedMultiplier = 1
+    self.hpMultiplier = 1
+    self.flatHp = 0
+    self.ammoMultiplier = 1
+    self.flatAmmo = 0
+    self.flatAmmoGain = 0
+    self.boostMultiplier = 1
+    self.flatBoost = 0
+
     self.timer:every(0.01, function()
         if self.ship == 'Fighter' then
             self.area:addGameObject(
@@ -53,15 +63,7 @@ function Player:new(area, x, y, opts)
             ) 
         end
     end)
-
-    self.hpMultiplier = 1
-    self.flatHp = 0
-    self.ammoMultiplier = 1
-    self.flatAmmo = 0
-    self.flatAmmoGain = 0
-    self.boostMultiplier = 1
-    self.flatBoost = 0
-
+    
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
     self.regainHpOnSpPickupChance = 90
@@ -312,6 +314,18 @@ function Player:addSp(amount)
     sp = sp + amount
 end
 
+function Player:enterHasteArea()
+    self.insideHasteArea = true
+    self.preHasteAttackSpeedMultiplier = self.attackSpeedMultiplier
+    self.attackSpeedMultiplier = self.attackSpeedMultiplier/2
+end
+
+function Player:exitHasteArea()
+    self.insideHasteArea = false
+    self.attackSpeedMultiplier = self.preHasteAttackSpeedMultiplier
+    self.preHasteAttackSpeedMultiplier = nil
+end
+
 function Player:update(dt)
     Player.super.update(self, dt)
     
@@ -325,7 +339,7 @@ function Player:update(dt)
     if input:down('right') then self.r = self.r + self.rv * dt end
 
     self.shootTimer = self.shootTimer + dt
-    if self.shootTimer > self.shootCooldown then
+    if self.shootTimer > self.shootCooldown * self.attackSpeedMultiplier then
         self.shootTimer = 0
         self:shoot()
     end
