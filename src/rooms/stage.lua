@@ -81,7 +81,7 @@ function Stage:draw()
             sp .. ' SP', 
             40, 10, 
             0, 1, 1,
-            math.floor(self.font:getWidth(self.score) / 2), self.font:getHeight() / 2
+            math.floor(self.font:getWidth(sp .. ' SP') / 2), self.font:getHeight() / 2
         )
 
         -- HP

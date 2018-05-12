@@ -64,6 +64,7 @@ function Player:new(area, x, y, opts)
 
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
+    self.regainHpOnSpPickupChance = 90
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -285,6 +286,13 @@ function Player:onAmmoPickup()
     end
 end
 
+function Player:onSpPickup()
+    if self.chances.regainHpOnSpPickupChance:next() then
+        self:addHp(25)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'HP Regain!', colour = hpColour })
+    end
+end
+
 function Player:addAmmo(amount)
     self.ammo = math.min(self.ammo + amount + self.flatAmmoGain, self.maxAmmo)
 end
@@ -374,6 +382,7 @@ function Player:update(dt)
         if object:is(SkillPoint) then
             object:die()
             self:addSp(1)
+            self:onSpPickup()
             currentRoom.score = currentRoom.score + 250
         end
         if object:is(Attack) then
