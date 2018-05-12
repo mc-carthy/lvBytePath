@@ -39,6 +39,9 @@ function Projectile:update(dt)
                 currentRoom.score = currentRoom.score + 150
             end
             object:hit(self.damage)
+            if object.hp and object.hp <= 0 then
+                currentRoom.player:onKill()
+            end
             self:die()
         end
     end

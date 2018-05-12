@@ -69,6 +69,19 @@ function Player:new(area, x, y, opts)
     self.regainHpOnSpPickupChance = 0
     self.spawnHasteAreaOnSpPickupChance = 0
     self.spawnHasteAreaOnHpPickupChance = 0
+    self.spawnSpOnCycleChance = 0
+    self.spawnHpOnCycleChance = 0
+    self.regainHpOnCycleChance = 0
+    self.regainFullAmmoOnCycleChance = 0
+    self.changeAttackOnCycleChance = 0
+    self.spawnHasteAreaOnCycleChance = 0
+    self.barrageOnCycleChance = 0
+    self.launchHomingProjectileOnCycleChance = 0
+    self.barrageOnKillChance = 0
+    self.regainAmmoOnKillChance = 0
+    self.launchHomingProjectileOnKillChance = 0
+    self.regainBoostOnKillChance = 0
+    self.spawnBoostOnKillChance = 0
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -272,17 +285,67 @@ end
 
 function Player:cycle()
     self.area:addGameObject('TickEffect', self.x, self.y, { parent = self })
+    self:onCycle()
+end
+
+function Player:onCycle()
+    if self.chances.spawnSpOnCycleChance:next() then
+        self.area:addGameObject('SkillPoint')
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'SP Spawn!', colour = skillPointColour })
+    end
+    if self.chances.spawnHpOnCycleChance:next() then
+        self.area:addGameObject('Health')
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'HP Spawn!', colour = hpColour })
+    end
+    if self.chances.regainHpOnCycleChance:next() then
+        self:addHp(25)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'HP Regain!', colour = hpColour })
+    end
+    if self.chances.regainFullAmmoOnCycleChance:next() then
+        self:addAmmo(self.maxAmmo)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Full Ammo Regain!', colour = ammoColour })
+    end
+    if self.chances.changeAttackOnCycleChance:next() then
+        self:setRandomAttack()
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Random Attack!', colour = attacks[self.attack].colour })
+    end
+    if self.chances.spawnHasteAreaOnCycleChance:next() then
+        self.area:addGameObject('HasteArea', self.x, self.y)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Haste Area!', colour = ammoColour})
+    end
+    if self.chances.barrageOnCycleChance:next() then
+        self:fireBarrage()
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Barrage!!!', colour = attacks[self.attack].colour })
+    end
+    if self.chances.launchHomingProjectileOnCycleChance:next() then
+        self:launchHomingProjectile()
+    end
+end
+
+function Player:onKill()
+    if self.chances.barrageOnKillChance:next() then
+        self:fireBarrage()
+    end
+    if self.chances.regainAmmoOnKillChance:next() then
+        self:addAmmo(20)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Ammo Regain!', colour = ammoColour })
+    end
+    if self.chances.launchHomingProjectileOnKillChance:next() then
+        self:launchHomingProjectile()
+    end
+    if self.chances.regainBoostOnKillChance:next() then
+        self:addBoost(40)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Boost Regain!', colour = boostColour })
+    end
+    if self.chances.spawnBoostOnKillChance:next() then
+        self.area:addGameObject('Boost', Random(0, gw), Random(0, gh)) 
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Boost Spawn!', colour = boostColour })
+    end
 end
 
 function Player:onAmmoPickup()
     if self.chances.launchHomingProjectileOnAmmoPickupChance:next() then
-        local d = 1.2 * self.w
-        self.area:addGameObject(
-            'Projectile',
-            self.x + d*math.cos(self.r), 
-            self.y + d*math.sin(self.r), 
-      	    { r = self.r, attack = 'Homing' })
-        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Homing Projectile!' })
+        self:launchHomingProjectile()
     end
     if self.chances.regainHpOnAmmoPickupChance:next() then
         self:addHp(25)
@@ -297,14 +360,14 @@ function Player:onSpPickup()
     end
     if self.chances.spawnHasteAreaOnSpPickupChance:next() then
         self.area:addGameObject('HasteArea', self.x, self.y)
-        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Haste Area!'})
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Haste Area!', colour = ammoColour })
     end
 end
 
 function Player:onHpPickup()
     if self.chances.spawnHasteAreaOnHpPickupChance:next() then
         self.area:addGameObject('HasteArea', self.x, self.y)
-        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Haste Area!'})
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Haste Area!', colour = ammoColour })
     end
 end
 
@@ -325,6 +388,48 @@ end
 
 function Player:addSp(amount)
     sp = sp + amount
+end
+
+function Player:setRandomAttack()
+    local attack = RandomFromTable({
+        'Double',
+        'Triple',
+        'Rapid',
+        'Spread',
+        'Back',
+        'Side',
+        'Homing'
+    })
+
+    self.attack = attack
+    self.shootCooldown = attacks[self.attack].cooldown
+    self.ammo = self.maxAmmo
+end
+
+function Player:fireBarrage()
+    for i = 1, 8 do
+        self.timer:after((i - 1) * 0.05, function()
+            local angle = Random(-math.pi / 8, math.pi / 8)
+            local d = 2.2 * self.w
+            self.area:addGameObject(
+                'Projectile', 
+                self.x + d * math.cos(self.r + angle), 
+                self.y + d * math.sin(self.r + angle), 
+                { r = self.r + angle, attack = self.attack }
+            )
+        end)
+    end
+    self.area:addGameObject('InfoText', self.x, self.y, { text = 'Barrage!!!', colour = attacks[self.attack].colour })
+end
+
+function Player:launchHomingProjectile()
+    local d = 1.2 * self.w
+    self.area:addGameObject(
+        'Projectile',
+        self.x + d*math.cos(self.r), 
+        self.y + d*math.sin(self.r), 
+        { r = self.r, attack = 'Homing' })
+    self.area:addGameObject('InfoText', self.x, self.y, { text = 'Homing Projectile!' })
 end
 
 function Player:enterHasteArea()

@@ -11,6 +11,7 @@ function Attack:new(area, x, y, opts)
         'Spread',
         'Back',
         'Side',
+        'Homing'
     })
     self.x = gw / 2 + direction * (gw / 2 + 48)
     self.y = Random(48, gh - 48)
