@@ -10,14 +10,14 @@ function Projectile:new(area, x, y, opts)
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
     self.collider:setObject(self)
     self.collider:setCollisionClass('Projectile')
-    self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
 end
 
 function Projectile:update(dt)
     Projectile.super.update(self, dt)
-
+    
+    
     if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
-
+    
     if self.collider:enter('Enemy') then
         local collisionData = self.collider:getEnterCollisionData('Enemy')
         local object = collisionData.collider:getObject()
@@ -30,6 +30,27 @@ function Projectile:update(dt)
             object:hit(self.damage)
             self:die()
         end
+    end
+    
+    if self.attack == 'Homing' then
+        if self.target and not self.target.dead then
+            local heading = Vector(self.collider:getLinearVelocity()):normalized()
+            local angle = math.atan2(self.target.y - self.y, self.target.x - self.x)
+            local toTargetHeading = Vector(math.cos(angle), math.sin(angle)):normalized()
+            local finalHeading = (heading + 0.1 * toTargetHeading):normalized()
+            self.collider:setLinearVelocity(self.v * finalHeading.x, self.v * finalHeading.y)
+        else
+            local targets = self.area:getGameObjects(function(e) 
+                for _, enemy in ipairs(enemies) do
+                    if e:is(_G[enemy]) and Distance({ x = e.x, y = e.y }, { x = self.x, y = self.y }) < 400 then
+                        return true
+                    end
+                end
+            end)
+            self.target = table.remove(targets, love.math.random(1, #targets))
+        end
+    else
+        self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
     end
 end
 

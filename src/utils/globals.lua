@@ -23,4 +23,10 @@ attacks = {
     ['Spread'] = { cooldown = 0.16, ammo = 1, abbreviation = 'RS', colour = defaultColour },
     ['Back'] = { cooldown = 0.32, ammo = 2, abbreviation = 'BK', colour = skillPointColour },
     ['Side'] = { cooldown = 0.32, ammo = 3, abbreviation = 'SI', colour = boostColour },
+    ['Homing'] = { cooldown = 0.56, ammo = 4, abbreviation = 'H', colour = skillPointColour }
+}
+
+enemies = {
+    'Rock',
+    'Shooter'
 }

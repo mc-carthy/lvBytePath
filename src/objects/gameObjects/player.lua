@@ -35,7 +35,7 @@ function Player:new(area, x, y, opts)
     self.attackSpeed = 1
     self.shootTimer = 0
     self.shootCooldown = 0.24
-    self:setAttack('Neutral')
+    self:setAttack('Homing')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(0.01, function()
         if self.ship == 'Fighter' then
@@ -117,7 +117,7 @@ function Player:shoot()
         self.y + d * math.sin(self.r),
         { player = self, d = d }
     )
-    if self.attack == 'Neutral' or self.attack == 'Rapid' then
+    if self.attack == 'Neutral' or self.attack == 'Rapid' or self.attack == 'Homing' then
         self.ammo = self.ammo - attacks[self.attack].ammo
         self.area:addGameObject(
             'Projectile', 
