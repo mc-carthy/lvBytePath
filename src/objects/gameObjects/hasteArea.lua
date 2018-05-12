@@ -2,6 +2,11 @@ HasteArea = GameObject:extend()
 
 function HasteArea:new(area, x, y, opts)
     HasteArea.super.new(self, area, x, y, opts)
+
+    self.r = opts.r or Random(64, 96)
+    self.timer:after(4, function()
+        self.timer:tween(0.25, self, { r = 0 }, 'in-out-cubic', function() self.dead = true end)
+    end)
 end
 
 function HasteArea:update(dt)
