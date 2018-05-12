@@ -35,7 +35,7 @@ function Player:new(area, x, y, opts)
     self.attackSpeed = 1
     self.shootTimer = 0
     self.shootCooldown = 0.24
-    self:setAttack('Homing')
+    self:setAttack('Neutral')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     self.timer:every(0.01, function()
         if self.ship == 'Fighter' then
@@ -61,6 +61,8 @@ function Player:new(area, x, y, opts)
     self.flatAmmoGain = 0
     self.boostMultiplier = 1
     self.flatBoost = 0
+
+    self.launchHomingProjectileOnAmmoPickupChance = 50
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -92,6 +94,7 @@ function Player:new(area, x, y, opts)
     end
 
     self:setStats()
+    self:generateChances()
 end
 
 function Player:setStats()
@@ -101,6 +104,15 @@ function Player:setStats()
     self.ammo = self.maxAmmo
     self.maxBoost = (self.maxBoost + self.flatBoost) * self.boostMultiplier
     self.boost = self.maxBoost
+end
+
+function Player:generateChances()
+    self.chances = {}
+    for k, v in pairs(self) do
+        if k:find('Chance') and type(v) == 'number' then
+      	    self.chances[k] = ChanceList({ true, math.ceil(v)}, { false, 100 - math.ceil(v) })
+      	end
+    end
 end
 
 function Player:setAttack(attack)
@@ -256,6 +268,18 @@ function Player:cycle()
     self.area:addGameObject('TickEffect', self.x, self.y, { parent = self })
 end
 
+function Player:onAmmoPickup()
+    if self.chances.launchHomingProjectileOnAmmoPickupChance:next() then
+        local d = 1.2 * self.w
+        self.area:addGameObject(
+            'Projectile',
+            self.x + d*math.cos(self.r), 
+            self.y + d*math.sin(self.r), 
+      	    { r = self.r, attack = 'Homing' })
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Homing Projectile!' })
+    end
+end
+
 function Player:addAmmo(amount)
     self.ammo = math.min(self.ammo + amount + self.flatAmmoGain, self.maxAmmo)
 end
@@ -330,6 +354,7 @@ function Player:update(dt)
         if object:is(Ammo) then
             object:die()
             self:addAmmo(5)
+            self:onAmmoPickup()
             currentRoom.score = currentRoom.score + 50
         end
         if object:is(Boost) then
