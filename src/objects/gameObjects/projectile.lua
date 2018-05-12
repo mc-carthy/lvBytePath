@@ -10,6 +10,17 @@ function Projectile:new(area, x, y, opts)
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
     self.collider:setObject(self)
     self.collider:setCollisionClass('Projectile')
+
+    if self.attack == 'Homing' then
+        self.timer:every(0.02, function()
+            local r = Vector(self.collider:getLinearVelocity()):angle()
+            self.area:addGameObject(
+                'TrailParticle', 
+                self.x - 1.0 * self.s * math.cos(r), 
+                self.y - 1.0 * self.s * math.sin(r), 
+                { parent = self, r = Random(1, 3), d = Random(0.1, 0.15), colour = skillPointColour }) 
+        end)
+    end
 end
 
 function Projectile:update(dt)
@@ -61,14 +72,21 @@ end
 
 function Projectile:draw()
     -- love.graphics.circle('line', self.x, self.y, self.s)
-    love.graphics.setColor(defaultColour)
+    -- love.graphics.setColor(defaultColour)
     
     PushRotate(self.x, self.y, Vector(self.collider:getLinearVelocity()):angle()) 
-    love.graphics.setLineWidth(self.s - self.s / 4)
-    love.graphics.line(self.x - 2 * self.s, self.y, self.x, self.y)
-    love.graphics.setColor(self.colour) -- change half the projectile line to another color
-    love.graphics.line(self.x, self.y, self.x + 2 * self.s, self.y)
-    love.graphics.setLineWidth(1)
+    if self.attack == 'Homing' then
+        love.graphics.setColor(self.colour)
+        love.graphics.polygon('fill', self.x - 2 * self.s, self.y, self.x, self.y - 1.5 * self.s, self.x, self.y + 1.5 * self.s)
+        love.graphics.setColor(defaultColour)
+        love.graphics.polygon('fill', self.x, self.y - 1.5 * self.s, self.x, self.y + 1.5 * self.s, self.x + 1.5 * self.s, self.y)
+    else
+        love.graphics.setLineWidth(self.s - self.s / 4)
+        love.graphics.line(self.x - 2 * self.s, self.y, self.x, self.y)
+        love.graphics.setColor(self.colour) -- change half the projectile line to another color
+        love.graphics.line(self.x, self.y, self.x + 2 * self.s, self.y)
+        love.graphics.setLineWidth(1)
+    end
     love.graphics.pop()
     love.graphics.setColor(defaultColour)
 end
