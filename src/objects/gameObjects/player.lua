@@ -55,8 +55,12 @@ function Player:new(area, x, y, opts)
     end)
 
     self.hpMultiplier = 1
+    self.flatHp = 0
     self.ammoMultiplier = 1
+    self.flatAmmo = 0
+    self.flatAmmoGain = 0
     self.boostMultiplier = 1
+    self.flatBoost = 0
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -91,11 +95,11 @@ function Player:new(area, x, y, opts)
 end
 
 function Player:setStats()
-    self.maxHp = self.maxHp * self.hpMultiplier
+    self.maxHp = (self.maxHp + self.flatHp) * self.hpMultiplier
     self.hp = self.maxHp
-    self.maxAmmo = self.maxAmmo * self.ammoMultiplier
+    self.maxAmmo = (self.maxAmmo + self.flatAmmo) * self.ammoMultiplier
     self.ammo = self.maxAmmo
-    self.maxBoost = self.maxBoost * self.boostMultiplier
+    self.maxBoost = (self.maxBoost + self.flatBoost) * self.boostMultiplier
     self.boost = self.maxBoost
 end
 
@@ -253,7 +257,7 @@ function Player:cycle()
 end
 
 function Player:addAmmo(amount)
-    self.ammo = math.min(self.ammo + amount, self.maxAmmo)
+    self.ammo = math.min(self.ammo + amount + self.flatAmmoGain, self.maxAmmo)
 end
 
 function Player:addBoost(amount)
