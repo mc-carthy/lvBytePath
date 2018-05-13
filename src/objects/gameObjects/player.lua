@@ -31,6 +31,7 @@ function Player:new(area, x, y, opts)
     self.boostCooldown = 2
     self.cycleTimer = 0
     self.cycleCooldown = 5
+    self.cycleCooldownSpeedMultiplier = Stat(1)
     self.trailColour = skillPointColour
 
     self.attackSpeed = 1
@@ -93,7 +94,8 @@ function Player:new(area, x, y, opts)
     self.spawnBoostOnKillChance = 0
     self.gainAttackSpeedBoostOnKillChance = 0
 
-    self.launchHomingProjectileWhileBoostingChance = 100
+    self.launchHomingProjectileWhileBoostingChance = 0
+    self.increasedCycleSpeedWhileBoosting = true
 
 
     self.ship = 'Fighter'
@@ -382,11 +384,15 @@ function Player:onBoostStart()
             self:launchHomingProjectile()
         end
     end)
+    if self.increasedCycleSpeedWhileBoosting then
+        self.cycleBoosting = true
+    end
 end
 
 function Player:onBoostEnd()
-    function Player:onBoostEnd()
-        self.timer:cancel('launchHomingProjectileWhileBoostingChance')
+    self.timer:cancel('launchHomingProjectileWhileBoostingChance')
+    if self.increasedCycleSpeedWhileBoosting then
+        self.cycleBoosting = false
     end
 end
 
@@ -481,8 +487,9 @@ end
 
 function Player:update(dt)
     Player.super.update(self, dt)
-    
-    self.cycleTimer = self.cycleTimer + dt
+    if self.cycleBoosting then self.cycleCooldownSpeedMultiplier:increase(200) end
+    self.cycleCooldownSpeedMultiplier:update(dt)
+    self.cycleTimer = self.cycleTimer + (dt * self.cycleCooldownSpeedMultiplier.value)
     if self.cycleTimer > self.cycleCooldown then
         self:cycle()
         self.cycleTimer = 0
