@@ -95,7 +95,8 @@ function Player:new(area, x, y, opts)
     self.gainAttackSpeedBoostOnKillChance = 0
 
     self.launchHomingProjectileWhileBoostingChance = 0
-    self.increasedCycleSpeedWhileBoosting = true
+    self.increasedCycleSpeedWhileBoosting = false
+    self.invincibleWhileBoosting = true
 
 
     self.ship = 'Fighter'
@@ -387,12 +388,21 @@ function Player:onBoostStart()
     if self.increasedCycleSpeedWhileBoosting then
         self.cycleBoosting = true
     end
+    if self.invincibleWhileBoosting then
+        self.invincible = true
+        self.timer:every('invincibilityWhileBoosting', 0.04, function() self.invisible = not self.invisible end)
+    end
 end
 
 function Player:onBoostEnd()
     self.timer:cancel('launchHomingProjectileWhileBoostingChance')
     if self.increasedCycleSpeedWhileBoosting then
         self.cycleBoosting = false
+    end
+    if self.invincibleWhileBoosting then
+        self.invincible = false
+        self.timer:cancel('invincibilityWhileBoosting')
+        self.invisible = false
     end
 end
 
@@ -487,6 +497,7 @@ end
 
 function Player:update(dt)
     Player.super.update(self, dt)
+
     if self.cycleBoosting then self.cycleCooldownSpeedMultiplier:increase(200) end
     self.cycleCooldownSpeedMultiplier:update(dt)
     self.cycleTimer = self.cycleTimer + (dt * self.cycleCooldownSpeedMultiplier.value)
