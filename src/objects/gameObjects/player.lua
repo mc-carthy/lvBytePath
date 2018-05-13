@@ -38,7 +38,9 @@ function Player:new(area, x, y, opts)
     self:setAttack('Neutral')
     self.timer:every(5, function() self.attackSpeed = Random(1, 2) end)
     
-    self.attackSpeedMultiplier = 1
+    self.baseAttackSpeedMultiplier = 1
+    self.attackSpeedMultiplier = Stat(1)
+    self.additionalAttackSpeedMultiplier = {}
     self.hpMultiplier = 1
     self.flatHp = 0
     self.ammoMultiplier = 1
@@ -82,6 +84,7 @@ function Player:new(area, x, y, opts)
     self.launchHomingProjectileOnKillChance = 0
     self.regainBoostOnKillChance = 0
     self.spawnBoostOnKillChance = 0
+    self.gainAttackSpeedBoostOnKillChance = 100
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -341,6 +344,11 @@ function Player:onKill()
         self.area:addGameObject('Boost', Random(0, gw), Random(0, gh)) 
         self.area:addGameObject('InfoText', self.x, self.y, { text = 'Boost Spawn!', colour = boostColour })
     end
+    if self.chances.gainAttackSpeedBoostOnKillChance:next() then
+        self.attackSpeedMultiplierBoosting = true
+        self.timer:after(4, function() self.attackSpeedMultiplierBoosting = false end)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Attack Speed Boost!', colour = ammoColour })
+    end
 end
 
 function Player:onAmmoPickup()
@@ -432,18 +440,6 @@ function Player:launchHomingProjectile()
     self.area:addGameObject('InfoText', self.x, self.y, { text = 'Homing Projectile!' })
 end
 
-function Player:enterHasteArea()
-    self.insideHasteArea = true
-    self.preHasteAttackSpeedMultiplier = self.attackSpeedMultiplier
-    self.attackSpeedMultiplier = self.attackSpeedMultiplier/2
-end
-
-function Player:exitHasteArea()
-    self.insideHasteArea = false
-    self.attackSpeedMultiplier = self.preHasteAttackSpeedMultiplier
-    self.preHasteAttackSpeedMultiplier = nil
-end
-
 function Player:update(dt)
     Player.super.update(self, dt)
     
@@ -456,8 +452,13 @@ function Player:update(dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
+    self.additionalAttackSpeedMultiplier = {}
+    if self.insideHasteArea then self.attackSpeedMultiplier:increase(100) end
+    if self.attackSpeedMultiplierBoosting then self.attackSpeedMultiplier:increase(100) end
+    self.attackSpeedMultiplier:update(dt)
+
     self.shootTimer = self.shootTimer + dt
-    if self.shootTimer > self.shootCooldown * self.attackSpeedMultiplier then
+    if self.shootTimer > self.shootCooldown / self.attackSpeedMultiplier.value then
         self.shootTimer = 0
         self:shoot()
     end
