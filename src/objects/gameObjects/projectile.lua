@@ -57,6 +57,19 @@ function Projectile:new(area, x, y, opts)
             end)
         end)
     end
+
+    if currentRoom.player.projectileFastSlow then
+        local initialV = self.v
+        self.timer:tween(0.2, self, { v = initialV * 2 * currentRoom.player.projectileAccelerationMultiplier }, 'in-out-cubic', function()
+            self.timer:tween(0.3, self, { v = initialV / (2 * currentRoom.player.projectileDeccelerationMultiplier) }, 'linear')
+        end)
+    end
+    if currentRoom.player.projectileSlowFast then
+        local initialV = self.v
+        self.timer:tween(0.2, self, { v = initialV / (2 * currentRoom.player.projectileDeccelerationMultiplier) }, 'in-out-cubic', function()
+            self.timer:tween(0.3, self, { v = initialV * 2 * currentRoom.player.projectileAccelerationMultiplier }, 'linear')
+        end)
+    end
 end
 
 function Projectile:update(dt)

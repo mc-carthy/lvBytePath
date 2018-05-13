@@ -95,8 +95,12 @@ function Player:new(area, x, y, opts)
     self.projectileNinetyDegreeChange = false
     self.projectileRandomDegreeChange = false
     self.angleChangeFrequencyMultiplier = 1
-    self.wavyProjectiles = true
+    self.wavyProjectiles = false
     self.projectileWavinessMultiplier = 1
+    self.projectileFastSlow = true
+    self.projectileSlowFast = false
+    self.projectileAccelerationMultiplier = 1
+    self.projectileDeccelerationMultiplier = 3
 
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
