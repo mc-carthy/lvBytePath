@@ -83,7 +83,8 @@ function Player:new(area, x, y, opts)
     self.barrageOnCycleChance = 0
     self.launchHomingProjectileOnCycleChance = 0
     self.gainMoveSpeedBoostOnCycleChance = 0
-    self.gainProjectileSpeedBoostOnCycleChance = 100
+    self.gainProjectileSpeedBoostOnCycleChance = 0
+    self.loseProjectileSpeedBoostOnCycleChance = 100
     
     self.barrageOnKillChance = 0
     self.regainAmmoOnKillChance = 0
@@ -335,9 +336,14 @@ function Player:onCycle()
         self.area:addGameObject('InfoText', self.x, self.y, { text = 'Speed Boost!', colour = boostColour })
     end
     if self.chances.gainProjectileSpeedBoostOnCycleChance:next() then
-        self.projectileMultiplierBoosting = true
-        self.timer:after(4, function() self.projectileMultiplierBoosting = false end)
+        self.projectileSpeedMultiplierBoosting = true
+        self.timer:after(4, function() self.projectileSpeedMultiplierBoosting = false end)
         self.area:addGameObject('InfoText', self.x, self.y, { text = 'Missile Speed Boost!', colour = ammoColour })
+    end
+    if self.chances.loseProjectileSpeedBoostOnCycleChance:next() then
+        self.projectileSpeedMultiplierInhibiting = true
+        self.timer:after(4, function() self.projectileSpeedMultiplierInhibiting = false end)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Missile Speed Reduction!', colour = ammoColour })
     end
 end
 
@@ -481,7 +487,8 @@ function Player:update(dt)
     if self.moveSpeedMultiplierBoosting then self.moveSpeedMultiplier:increase(100) end
     self.moveSpeedMultiplier:update(dt)
 
-    if self.projectileMultiplierBoosting then self.projectileSpeedMultiplier:increase(100) end
+    if self.projectileSpeedMultiplierBoosting then self.projectileSpeedMultiplier:increase(100) end
+    if self.projectileSpeedMultiplierInhibiting then self.projectileSpeedMultiplier:decrease(100) end
     self.projectileSpeedMultiplier:update(dt)
 
     self.boost = math.min(self.boost + self.boostGainRate * dt, self.maxBoost)
