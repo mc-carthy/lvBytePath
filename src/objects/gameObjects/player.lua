@@ -14,6 +14,7 @@ function Player:new(area, x, y, opts)
     self.v = 0
     self.baseMaxV = 100
     self.maxV = self.baseMaxV
+    self.moveSpeedMultiplier = Stat(1)
     self.a = 100
     self.maxHp = 100
     self.hp = self.maxHp
@@ -40,7 +41,6 @@ function Player:new(area, x, y, opts)
     
     self.baseAttackSpeedMultiplier = 1
     self.attackSpeedMultiplier = Stat(1)
-    self.additionalAttackSpeedMultiplier = {}
     self.hpMultiplier = 1
     self.flatHp = 0
     self.ammoMultiplier = 1
@@ -71,6 +71,7 @@ function Player:new(area, x, y, opts)
     self.regainHpOnSpPickupChance = 0
     self.spawnHasteAreaOnSpPickupChance = 0
     self.spawnHasteAreaOnHpPickupChance = 0
+    
     self.spawnSpOnCycleChance = 0
     self.spawnHpOnCycleChance = 0
     self.regainHpOnCycleChance = 0
@@ -79,12 +80,14 @@ function Player:new(area, x, y, opts)
     self.spawnHasteAreaOnCycleChance = 0
     self.barrageOnCycleChance = 0
     self.launchHomingProjectileOnCycleChance = 0
+    self.gainMoveSpeedBoostOnCycleChance = 100
+    
     self.barrageOnKillChance = 0
     self.regainAmmoOnKillChance = 0
     self.launchHomingProjectileOnKillChance = 0
     self.regainBoostOnKillChance = 0
     self.spawnBoostOnKillChance = 0
-    self.gainAttackSpeedBoostOnKillChance = 100
+    self.gainAttackSpeedBoostOnKillChance = 0
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -323,6 +326,11 @@ function Player:onCycle()
     if self.chances.launchHomingProjectileOnCycleChance:next() then
         self:launchHomingProjectile()
     end
+    if self.chances.gainMoveSpeedBoostOnCycleChance:next() then
+        self.moveSpeedMultiplierBoosting = true
+        self.timer:after(4, function() self.moveSpeedMultiplierBoosting = false end)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Speed Boost!', colour = boostColour })
+    end
 end
 
 function Player:onKill()
@@ -452,7 +460,6 @@ function Player:update(dt)
     if input:down('left') then self.r = self.r - self.rv * dt end
     if input:down('right') then self.r = self.r + self.rv * dt end
 
-    self.additionalAttackSpeedMultiplier = {}
     if self.insideHasteArea then self.attackSpeedMultiplier:increase(100) end
     if self.attackSpeedMultiplierBoosting then self.attackSpeedMultiplier:increase(100) end
     self.attackSpeedMultiplier:update(dt)
@@ -463,8 +470,11 @@ function Player:update(dt)
         self:shoot()
     end
 
+    if self.moveSpeedMultiplierBoosting then self.moveSpeedMultiplier:increase(100) end
+    self.moveSpeedMultiplier:update(dt)
+
     self.boost = math.min(self.boost + self.boostGainRate * dt, self.maxBoost)
-    self.maxV = self.baseMaxV
+    self.maxV = self.baseMaxV * self.moveSpeedMultiplier.value
     self.boostTimer = self.boostTimer + dt
     if self.boostTimer > self.boostCooldown then self.canBoost = true end
     self.boosting = false
