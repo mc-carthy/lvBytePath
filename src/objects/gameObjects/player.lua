@@ -80,7 +80,7 @@ function Player:new(area, x, y, opts)
     self.projectileSizeMultiplier = 1
     self.boostRechargeRateMultiplier = 1
     self.invincibilityDurationMultiplier = 1
-    self.ammoConsumptionMultiplier = 5
+    self.ammoConsumptionMultiplier = 1
     self.sizeMultiplier = 0 -- TODO: Implement this
     self.statBoostDurationMultiplier = 0 -- TODO: Implement this
 
@@ -92,6 +92,7 @@ function Player:new(area, x, y, opts)
     self.doubleBoostSpawnChance = 0
 
     self.attackTwiceOnShootChance = 0
+    self.projectileNinetyDegreeChange = true
 
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0

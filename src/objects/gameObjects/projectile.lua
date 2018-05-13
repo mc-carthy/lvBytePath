@@ -21,6 +21,20 @@ function Projectile:new(area, x, y, opts)
                 { parent = self, r = Random(1, 3), d = Random(0.1, 0.15), colour = skillPointColour }) 
         end)
     end
+
+    if currentRoom.player.projectileNinetyDegreeChange then
+        self.timer:after(0.2, function() 
+            local ninetyDegreeDirection = RandomFromTable({ -1, 1 })
+            self.r = self.r + ninetyDegreeDirection * math.pi / 2
+            self.timer:every('ninetyDegreeFirst', 0.25, function()
+                self.r = self.r - ninetyDegreeDirection * math.pi / 2
+                self.timer:after('ninetyDegreeSecond', 0.1, function()
+                    self.r = self.r - ninetyDegreeDirection * math.pi / 2
+                    ninetyDegreeDirection = -1 * ninetyDegreeDirection
+                end)
+            end)
+        end)
+    end
 end
 
 function Projectile:update(dt)
