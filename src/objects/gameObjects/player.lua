@@ -97,10 +97,10 @@ function Player:new(area, x, y, opts)
     self.angleChangeFrequencyMultiplier = 1
     self.wavyProjectiles = false
     self.projectileWavinessMultiplier = 1
-    self.projectileFastSlow = true
+    self.projectileFastSlow = false
     self.projectileSlowFast = false
     self.projectileAccelerationMultiplier = 1
-    self.projectileDeccelerationMultiplier = 3
+    self.projectileDeccelerationMultiplier = 1
 
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
@@ -127,7 +127,7 @@ function Player:new(area, x, y, opts)
     self.regainBoostOnKillChance = 0
     self.spawnBoostOnKillChance = 0
     self.gainAttackSpeedBoostOnKillChance = 0
-
+    self.shieldProjectileChance = 100
     self.launchHomingProjectileWhileBoostingChance = 0
     self.increasedCycleSpeedWhileBoosting = false
     self.invincibleWhileBoosting = false
@@ -195,6 +195,9 @@ function Player:setAttack(attack)
 end
 
 function Player:shoot()
+    local mods = {
+        shield = self.chances.shieldProjectileChance:next()
+    }
     local d = 1.2 * self.w
     self.area:addGameObject(
         'ShootEffect', 
@@ -208,7 +211,7 @@ function Player:shoot()
             'Projectile', 
             self.x + d * math.cos(self.r),
             self.y + d * math.sin(self.r),
-            { r = self.r, attack = self.attack }
+            MergeTables({ r = self.r, attack = self.attack }, mods)
         )
     elseif self.attack == 'Double' then
         self.ammo = self.ammo - attacks[self.attack].ammo * (1 / self.ammoConsumptionMultiplier)

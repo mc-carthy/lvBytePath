@@ -10,6 +10,7 @@ function Projectile:new(area, x, y, opts)
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
     self.collider:setObject(self)
     self.collider:setCollisionClass('Projectile')
+    self.previousX, self.previousY = self.collider:getPosition()
 
     if self.attack == 'Homing' then
         self.timer:every(0.02, function()
@@ -70,6 +71,15 @@ function Projectile:new(area, x, y, opts)
             self.timer:tween(0.3, self, { v = initialV * 2 * currentRoom.player.projectileAccelerationMultiplier }, 'linear')
         end)
     end
+
+    if self.shield then
+        self.orbitDistance = Random(32, 64)
+        self.orbitSpeed = Random(-6, 6)
+        self.orbitOffset = Random(0, 2 * math.pi)
+        self.invisible = true
+        self.timer:after(0.1, function() self.invisible = false end)
+        self.timer:after(6, function() self:die() end)
+    end
 end
 
 function Projectile:update(dt)
@@ -115,6 +125,18 @@ function Projectile:update(dt)
     else
         self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
     end
+
+    if self.shield then
+        local player = currentRoom.player
+        self.collider:setPosition(
+            player.x + self.orbitDistance * math.cos(self.orbitSpeed * time + self.orbitOffset),
+            player.y + self.orbitDistance * math.sin(self.orbitSpeed * time + self.orbitOffset)
+        )
+        local x, y = self.collider:getPosition()
+        local dx, dy = x - self.previousX, y - self.previousY
+        self.r = Vector(dx, dy):angle()
+    end
+    self.previousX, self.previousY = self.collider:getPosition()
 end
 
 function Projectile:die()
@@ -123,6 +145,7 @@ function Projectile:die()
 end
 
 function Projectile:draw()
+    if self.invisible then return end
     -- love.graphics.circle('line', self.x, self.y, self.s)
     -- love.graphics.setColor(defaultColour)
     

@@ -47,9 +47,11 @@ function love.load()
     --     gotoRoom('Stage')
     -- end)
     sp = 0
+    time = 0
 end
     
 function love.update(dt)
+    time = time + dt
     timer:update(dt * slowAmount)
     camera:update(dt * slowAmount)
     if currentRoom and currentRoom.update then

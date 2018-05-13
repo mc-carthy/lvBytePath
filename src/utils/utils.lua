@@ -52,6 +52,15 @@ function RandomFromTable(t)
     return t[love.math.random(1, #t)]
 end
 
+function MergeTables(t1, t2)
+    local mergedTable = {}
+
+    for k, v in pairs(t1) do mergedTable[k] = v end
+    for k, v in pairs(t2) do mergedTable[k] = v end
+
+    return mergedTable
+end
+
 function AreRectanglesOverlapping(a, b)
     return not (
         a.x + a.w < b.x or
