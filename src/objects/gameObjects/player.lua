@@ -69,6 +69,8 @@ function Player:new(area, x, y, opts)
         end
     end)
     
+    self.luckMultiplier = 1
+
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
     self.regainHpOnSpPickupChance = 0
@@ -87,7 +89,7 @@ function Player:new(area, x, y, opts)
     self.gainProjectileSpeedBoostOnCycleChance = 0
     self.loseProjectileSpeedBoostOnCycleChance = 0
     
-    self.barrageOnKillChance = 0
+    self.barrageOnKillChance = 50
     self.regainAmmoOnKillChance = 0
     self.launchHomingProjectileOnKillChance = 0
     self.regainBoostOnKillChance = 0
@@ -96,7 +98,8 @@ function Player:new(area, x, y, opts)
 
     self.launchHomingProjectileWhileBoostingChance = 0
     self.increasedCycleSpeedWhileBoosting = false
-    self.invincibleWhileBoosting = true
+    self.invincibleWhileBoosting = false
+    self.increasedLuckWhileBoosting = true
 
 
     self.ship = 'Fighter'
@@ -145,7 +148,10 @@ function Player:generateChances()
     self.chances = {}
     for k, v in pairs(self) do
         if k:find('Chance') and type(v) == 'number' then
-      	    self.chances[k] = ChanceList({ true, math.ceil(v)}, { false, 100 - math.ceil(v) })
+      	    self.chances[k] = ChanceList(
+                { true, math.ceil(v * self.luckMultiplier) },
+                { false, 100 - math.ceil(v * self.luckMultiplier) }
+            )
       	end
     end
 end
@@ -392,6 +398,11 @@ function Player:onBoostStart()
         self.invincible = true
         self.timer:every('invincibilityWhileBoosting', 0.04, function() self.invisible = not self.invisible end)
     end
+    if self.increasedLuckWhileBoosting then
+        self.luckBoosting = true
+        self.luckMultiplier = self.luckMultiplier * 2
+        self:generateChances()
+    end
 end
 
 function Player:onBoostEnd()
@@ -403,6 +414,11 @@ function Player:onBoostEnd()
         self.invincible = false
         self.timer:cancel('invincibilityWhileBoosting')
         self.invisible = false
+    end
+    if self.increasedLuckWhileBoosting and self.luckBoosting then
+        self.luckBoosting = false
+        self.luckMultiplier = self.luckMultiplier / 2
+        self:generateChances()
     end
 end
 
