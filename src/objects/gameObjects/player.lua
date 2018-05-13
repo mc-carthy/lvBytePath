@@ -41,6 +41,8 @@ function Player:new(area, x, y, opts)
     
     self.baseAttackSpeedMultiplier = 1
     self.attackSpeedMultiplier = Stat(1)
+    self.baseProjectileSpeedMultiplier = 200
+    self.projectileSpeedMultiplier = Stat(1)
     self.hpMultiplier = 1
     self.flatHp = 0
     self.ammoMultiplier = 1
@@ -80,7 +82,8 @@ function Player:new(area, x, y, opts)
     self.spawnHasteAreaOnCycleChance = 0
     self.barrageOnCycleChance = 0
     self.launchHomingProjectileOnCycleChance = 0
-    self.gainMoveSpeedBoostOnCycleChance = 100
+    self.gainMoveSpeedBoostOnCycleChance = 0
+    self.gainProjectileSpeedBoostOnCycleChance = 100
     
     self.barrageOnKillChance = 0
     self.regainAmmoOnKillChance = 0
@@ -211,13 +214,13 @@ function Player:shoot()
             'Projectile', 
             self.x + d * math.cos(self.r),
             self.y + d * math.sin(self.r),
-            { r = self.r, attack = self.attack}
+            { r = self.r, attack = self.attack }
         )
         self.area:addGameObject(
             'Projectile', 
             self.x + 1.5 * d * math.cos(self.r - math.pi),
             self.y + 1.5 * d * math.sin(self.r - math.pi),
-            { r = self.r - math.pi, attack = self.attack}
+            { r = self.r - math.pi, attack = self.attack }
         )
     elseif self.attack == 'Side' then
         self.ammo = self.ammo - attacks[self.attack].ammo
@@ -225,19 +228,19 @@ function Player:shoot()
             'Projectile', 
             self.x + d * math.cos(self.r),
             self.y + d * math.sin(self.r),
-            { r = self.r, attack = self.attack}
+            { r = self.r, attack = self.attack }
         )
         self.area:addGameObject(
             'Projectile', 
             self.x + 1.5 * d * math.cos(self.r - math.pi / 2),
             self.y + 1.5 * d * math.sin(self.r - math.pi / 2),
-            { r = self.r - math.pi / 2, attack = self.attack}
+            { r = self.r - math.pi / 2, attack = self.attack }
         )
         self.area:addGameObject(
             'Projectile', 
             self.x + 1.5 * d * math.cos(self.r + math.pi / 2),
             self.y + 1.5 * d * math.sin(self.r + math.pi / 2),
-            { r = self.r + math.pi / 2, attack = self.attack}
+            { r = self.r + math.pi / 2, attack = self.attack }
         )
     end
     if self.ammo <= 0 then
@@ -330,6 +333,11 @@ function Player:onCycle()
         self.moveSpeedMultiplierBoosting = true
         self.timer:after(4, function() self.moveSpeedMultiplierBoosting = false end)
         self.area:addGameObject('InfoText', self.x, self.y, { text = 'Speed Boost!', colour = boostColour })
+    end
+    if self.chances.gainProjectileSpeedBoostOnCycleChance:next() then
+        self.projectileMultiplierBoosting = true
+        self.timer:after(4, function() self.projectileMultiplierBoosting = false end)
+        self.area:addGameObject('InfoText', self.x, self.y, { text = 'Missile Speed Boost!', colour = ammoColour })
     end
 end
 
@@ -472,6 +480,9 @@ function Player:update(dt)
 
     if self.moveSpeedMultiplierBoosting then self.moveSpeedMultiplier:increase(100) end
     self.moveSpeedMultiplier:update(dt)
+
+    if self.projectileMultiplierBoosting then self.projectileSpeedMultiplier:increase(100) end
+    self.projectileSpeedMultiplier:update(dt)
 
     self.boost = math.min(self.boost + self.boostGainRate * dt, self.maxBoost)
     self.maxV = self.baseMaxV * self.moveSpeedMultiplier.value
