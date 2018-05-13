@@ -4,7 +4,7 @@ function Projectile:new(area, x, y, opts)
     Projectile.super.new(self, area, x, y, opts)
     self.colour = opts.colour or attacks[self.attack].colour
     self.damage = opts.damage or 100
-    self.s = opts.s or 2.5
+    self.s = (opts.s or 2.5) * currentRoom.player.projectileSizeMultiplier
     self.v = (opts.v or 200) * currentRoom.player.projectileSpeedMultiplier.value
 
     self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)

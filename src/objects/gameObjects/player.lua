@@ -75,6 +75,15 @@ function Player:new(area, x, y, opts)
     self.resourceSpawnRateMultiplier = 1
     self.attackSpawnRateMultiplier = 1
 
+    self.turnRateMultiplier = 1
+    self.boostEffectivenessMultiplier = 1
+    self.projectileSizeMultiplier = 1
+    self.boostRechargeRateMultiplier = 1
+    self.invincibilityDurationMultiplier = 1
+    self.ammoConsumptionMultiplier = 5
+    self.sizeMultiplier = 0 -- TODO: Implement this
+    self.statBoostDurationMultiplier = 0 -- TODO: Implement this
+
     self.hpSpawnChanceMultiplier = 1
     self.spSpawnChanceMultiplier = 1
     self.boostSpawnChanceMultiplier = 1
@@ -185,7 +194,7 @@ function Player:shoot()
         { player = self, d = d }
     )
     if self.attack == 'Neutral' or self.attack == 'Rapid' or self.attack == 'Homing' then
-        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.ammo = self.ammo - attacks[self.attack].ammo * (1 / self.ammoConsumptionMultiplier)
         self.area:addGameObject(
             'Projectile', 
             self.x + d * math.cos(self.r),
@@ -193,7 +202,7 @@ function Player:shoot()
             { r = self.r, attack = self.attack }
         )
     elseif self.attack == 'Double' then
-        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.ammo = self.ammo - attacks[self.attack].ammo * (1 / self.ammoConsumptionMultiplier)
         self.area:addGameObject(
             'Projectile', 
             self.x + 1.5 * d * math.cos(self.r + math.pi / 12),
@@ -207,7 +216,7 @@ function Player:shoot()
             { r = self.r - math.pi / 12, attack = self.attack }
         )
     elseif self.attack == 'Triple' then
-        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.ammo = self.ammo - attacks[self.attack].ammo * (1 / self.ammoConsumptionMultiplier)
         self.area:addGameObject(
             'Projectile', 
             self.x + d * math.cos(self.r),
@@ -227,7 +236,7 @@ function Player:shoot()
             { r = self.r, attack = self.attack }
         )
     elseif self.attack == 'Spread' then
-        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.ammo = self.ammo - attacks[self.attack].ammo * (1 / self.ammoConsumptionMultiplier)
         local colour = self.ammo % 2 == 0 and defaultColour or RandomFromTable(allColours)
         self.area:addGameObject(
             'Projectile', 
@@ -236,7 +245,7 @@ function Player:shoot()
             { r = self.r + Random(-math.pi / 8, math.pi / 8), attack = self.attack, colour = colour }
         )
     elseif self.attack == 'Back' then
-        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.ammo = self.ammo - attacks[self.attack].ammo * (1 / self.ammoConsumptionMultiplier)
         self.area:addGameObject(
             'Projectile', 
             self.x + d * math.cos(self.r),
@@ -250,7 +259,7 @@ function Player:shoot()
             { r = self.r - math.pi, attack = self.attack }
         )
     elseif self.attack == 'Side' then
-        self.ammo = self.ammo - attacks[self.attack].ammo
+        self.ammo = self.ammo - attacks[self.attack].ammo * (1 / self.ammoConsumptionMultiplier)
         self.area:addGameObject(
             'Projectile', 
             self.x + d * math.cos(self.r),
@@ -280,7 +289,7 @@ function Player:hit(damage)
     if self.invincible then return end
     local damage = damage or 10
     local flashTime = 0.04
-    local invincibilityTime = 2
+    local invincibilityTime = 2 * self.invincibilityDurationMultiplier
     self:addHp(-damage)
 
     for i = 1, love.math.random(4, 8) do
@@ -540,8 +549,8 @@ function Player:update(dt)
         self.cycleTimer = 0
     end
     
-    if input:down('left') then self.r = self.r - self.rv * dt end
-    if input:down('right') then self.r = self.r + self.rv * dt end
+    if input:down('left') then self.r = self.r - self.rv * self.turnRateMultiplier * dt end
+    if input:down('right') then self.r = self.r + self.rv * self.turnRateMultiplier * dt end
 
     if self.insideHasteArea then self.attackSpeedMultiplier:increase(100) end
     if self.attackSpeedMultiplierBoosting then self.attackSpeedMultiplier:increase(100) end
@@ -564,7 +573,7 @@ function Player:update(dt)
     if self.projectileSpeedMultiplierInhibiting then self.projectileSpeedMultiplier:decrease(100) end
     self.projectileSpeedMultiplier:update(dt)
 
-    self.boost = math.min(self.boost + self.boostGainRate * dt, self.maxBoost)
+    self.boost = math.min(self.boost + self.boostGainRate * self.boostRechargeRateMultiplier * dt, self.maxBoost)
     self.maxV = self.baseMaxV * self.moveSpeedMultiplier.value
     self.boostTimer = self.boostTimer + dt
     if self.boostTimer > self.boostCooldown then self.canBoost = true end
@@ -572,7 +581,7 @@ function Player:update(dt)
     if input:pressed('up') and self.boost > 1 and self.canBoost then self:onBoostStart() end
     if input:released('up') then self:onBoostEnd() end
     if input:down('up') and self.boost > 1 and self.canBoost then 
-        self.maxV = 1.5 * self.baseMaxV
+        self.maxV = 1.5 * self.baseMaxV * self.boostEffectivenessMultiplier
         self.boosting = true
         self.boost = self.boost - self.boostUseRate * dt
         if self.boost <= 1 then
@@ -585,7 +594,7 @@ function Player:update(dt)
     if input:pressed('down') and self.boost > 1 and self.canBoost then self:onBoostStart() end
     if input:released('down') then self:onBoostEnd() end
     if input:down('down') and self.boost > 1 and self.canBoost then
-        self.maxV = 0.5 * self.baseMaxV
+        self.maxV = 0.5 * self.baseMaxV / self.boostEffectivenessMultiplier
         self.boosting = true
         self.boost = self.boost - self.boostUseRate * dt
         if self.boost <= 1 then
