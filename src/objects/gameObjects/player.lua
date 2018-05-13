@@ -71,14 +71,18 @@ function Player:new(area, x, y, opts)
     
     self.luckMultiplier = 1
 
+    self.enemySpawnRateMultiplier = 1
+    self.resourceSpawnRateMultiplier = 1
+    self.attackSpawnRateMultiplier = 1
+
     self.hpSpawnChanceMultiplier = 1
     self.spSpawnChanceMultiplier = 1
     self.boostSpawnChanceMultiplier = 1
-    self.doubleHpSpawnChance = 100
-    self.doubleSpSpawnChance = 100
-    self.doubleBoostSpawnChance = 100
+    self.doubleHpSpawnChance = 0
+    self.doubleSpSpawnChance = 0
+    self.doubleBoostSpawnChance = 0
 
-    self.attackTwiceOnShootChance = 10
+    self.attackTwiceOnShootChance = 0
 
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
@@ -100,7 +104,7 @@ function Player:new(area, x, y, opts)
     
     self.barrageOnKillChance = 0
     self.regainAmmoOnKillChance = 0
-    self.spawnDoubleAmmoOnKillChance = 100
+    self.spawnDoubleAmmoOnKillChance = 0
     self.launchHomingProjectileOnKillChance = 0
     self.regainBoostOnKillChance = 0
     self.spawnBoostOnKillChance = 0
@@ -109,7 +113,7 @@ function Player:new(area, x, y, opts)
     self.launchHomingProjectileWhileBoostingChance = 0
     self.increasedCycleSpeedWhileBoosting = false
     self.invincibleWhileBoosting = false
-    self.increasedLuckWhileBoosting = true
+    self.increasedLuckWhileBoosting = false
 
 
     self.ship = 'Fighter'

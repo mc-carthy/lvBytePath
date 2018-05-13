@@ -3,6 +3,13 @@ Director = Object:extend()
 function Director:new(stage)
     self.stage = stage
     self.timer = Timer()
+
+    self.resourceTime = 16
+    self.resourceTimer = 0
+    
+    self.attackTime = 30
+    self.attackTimer = 0
+
     self.difficulty = 1
     self.roundTime = 22
     self.roundTimer = 0
@@ -36,22 +43,6 @@ function Director:new(stage)
         { 'Health', 14 * stage.player.hpSpawnChanceMultiplier },
         { 'SkillPoint', 58 * stage.player.spSpawnChanceMultiplier }
     )
-    self.timer:every(16, function()
-        local resource = self.resourceSpawnChance:next()
-        self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
-        
-        if resource == 'Boost' and stage.player.chances.doubleBoostSpawnChance:next() then
-            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
-        elseif resource == 'Health' and stage.player.chances.doubleHpSpawnChance:next() then
-            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
-        elseif resource == 'SkillPoint' and stage.player.chances.doubleSpSpawnChance:next() then
-            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
-        end
-
-    end)
-    self.timer:every(30, function()
-        self.stage.area:addGameObject('Attack', Random(0, gw), Random(0, gh)) 
-    end)
 
     self:setEnemySpawnForThisRound()
 end
@@ -83,10 +74,32 @@ end
 
 function Director:update(dt)
     self.timer:update(dt)
+
     self.roundTimer = self.roundTimer + dt
-    if self.roundTimer > self.roundTime then
+    if self.roundTimer > self.roundTime / self.stage.player.enemySpawnRateMultiplier then
         self.difficulty = self.difficulty + 1
         self.roundTimer = 0
         self:setEnemySpawnForThisRound()
+    end
+
+    self.attackTimer = self.attackTimer + dt
+    if self.attackTimer > self.attackTime / self.stage.player.attackSpawnRateMultiplier then
+        self.attackTimer = 0
+        self.stage.area:addGameObject('Attack', Random(0, gw), Random(0, gh))
+    end
+
+    self.resourceTimer = self.resourceTimer + dt
+    if self.resourceTimer > self.resourceTime / self.stage.player.resourceSpawnRateMultiplier then
+        self.resourceTimer = 0
+        local resource = self.resourceSpawnChance:next()
+        self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+
+        if resource == 'Boost' and self.stage.player.chances.doubleBoostSpawnChance:next() then
+            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+        elseif resource == 'Health' and self.stage.player.chances.doubleHpSpawnChance:next() then
+            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+        elseif resource == 'SkillPoint' and self.stage.player.chances.doubleSpSpawnChance:next() then
+            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+        end
     end
 end
