@@ -71,6 +71,10 @@ function Player:new(area, x, y, opts)
     
     self.luckMultiplier = 1
 
+    self.hpSpawnChanceMultiplier = 1
+    self.spSpawnChanceMultiplier = 1
+    self.boostSpawnChanceMultiplier = 1
+
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
     self.regainHpOnSpPickupChance = 0
@@ -89,7 +93,7 @@ function Player:new(area, x, y, opts)
     self.gainProjectileSpeedBoostOnCycleChance = 0
     self.loseProjectileSpeedBoostOnCycleChance = 0
     
-    self.barrageOnKillChance = 50
+    self.barrageOnKillChance = 0
     self.regainAmmoOnKillChance = 0
     self.launchHomingProjectileOnKillChance = 0
     self.regainBoostOnKillChance = 0

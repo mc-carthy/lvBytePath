@@ -31,7 +31,11 @@ function Director:new(stage)
     	)
     end
 
-    self.resourceSpawnChance = ChanceList( { 'Boost', 28 }, { 'Health', 14 }, { 'SkillPoint', 58 } )
+    self.resourceSpawnChance = ChanceList(
+        { 'Boost', 28 * stage.player.boostSpawnChanceMultiplier },
+        { 'Health', 14 * stage.player.hpSpawnChanceMultiplier },
+        { 'SkillPoint', 58 * stage.player.spSpawnChanceMultiplier }
+    )
     self.timer:every(16, function()
         self.stage.area:addGameObject(self.resourceSpawnChance:next(), Random(0, gw), Random(0, gh))
     end)
