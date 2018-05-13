@@ -26,12 +26,21 @@ function Projectile:new(area, x, y, opts)
         self.timer:after(0.2, function() 
             local ninetyDegreeDirection = RandomFromTable({ -1, 1 })
             self.r = self.r + ninetyDegreeDirection * math.pi / 2
-            self.timer:every('ninetyDegreeFirst', 0.25, function()
+            self.timer:every('ninetyDegreeFirst', 0.25 / currentRoom.player.angleChangeFrequencyMultiplier, function()
                 self.r = self.r - ninetyDegreeDirection * math.pi / 2
-                self.timer:after('ninetyDegreeSecond', 0.1, function()
+                self.timer:after('ninetyDegreeSecond', 0.1 / currentRoom.player.angleChangeFrequencyMultiplier, function()
                     self.r = self.r - ninetyDegreeDirection * math.pi / 2
                     ninetyDegreeDirection = -1 * ninetyDegreeDirection
                 end)
+            end)
+        end)
+    end
+
+    if currentRoom.player.projectileRandomDegreeChange then
+        self.timer:after(0.2, function() 
+            self.timer:every(0.25 / currentRoom.player.angleChangeFrequencyMultiplier, function()
+                local degreeDirection = Random(-math.pi / 2, math.pi / 2)
+                self.r = self.r - degreeDirection
             end)
         end)
     end

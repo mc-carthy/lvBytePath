@@ -92,7 +92,9 @@ function Player:new(area, x, y, opts)
     self.doubleBoostSpawnChance = 0
 
     self.attackTwiceOnShootChance = 0
-    self.projectileNinetyDegreeChange = true
+    self.projectileNinetyDegreeChange = false
+    self.projectileRandomDegreeChange = false
+    self.angleChangeFrequencyMultiplier = 1
 
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
