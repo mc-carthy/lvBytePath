@@ -84,7 +84,7 @@ function Player:new(area, x, y, opts)
     self.launchHomingProjectileOnCycleChance = 0
     self.gainMoveSpeedBoostOnCycleChance = 0
     self.gainProjectileSpeedBoostOnCycleChance = 0
-    self.loseProjectileSpeedBoostOnCycleChance = 100
+    self.loseProjectileSpeedBoostOnCycleChance = 0
     
     self.barrageOnKillChance = 0
     self.regainAmmoOnKillChance = 0
@@ -92,6 +92,9 @@ function Player:new(area, x, y, opts)
     self.regainBoostOnKillChance = 0
     self.spawnBoostOnKillChance = 0
     self.gainAttackSpeedBoostOnKillChance = 0
+
+    self.launchHomingProjectileWhileBoostingChance = 100
+
 
     self.ship = 'Fighter'
     self.polygons = {}
@@ -373,6 +376,20 @@ function Player:onKill()
     end
 end
 
+function Player:onBoostStart()
+    self.timer:every('launchHomingProjectileWhileBoostingChance', 0.2, function() 
+        if self.chances.launchHomingProjectileWhileBoostingChance:next() then
+            self:launchHomingProjectile()
+        end
+    end)
+end
+
+function Player:onBoostEnd()
+    function Player:onBoostEnd()
+        self.timer:cancel('launchHomingProjectileWhileBoostingChance')
+    end
+end
+
 function Player:onAmmoPickup()
     if self.chances.launchHomingProjectileOnAmmoPickupChance:next() then
         self:launchHomingProjectile()
@@ -496,6 +513,8 @@ function Player:update(dt)
     self.boostTimer = self.boostTimer + dt
     if self.boostTimer > self.boostCooldown then self.canBoost = true end
     self.boosting = false
+    if input:pressed('up') and self.boost > 1 and self.canBoost then self:onBoostStart() end
+    if input:released('up') then self:onBoostEnd() end
     if input:down('up') and self.boost > 1 and self.canBoost then 
         self.maxV = 1.5 * self.baseMaxV
         self.boosting = true
@@ -504,8 +523,11 @@ function Player:update(dt)
             self.boosting = false
             self.canBoost = false
             self.boostTimer = 0
+            self:onBoostEnd()
         end
     end
+    if input:pressed('down') and self.boost > 1 and self.canBoost then self:onBoostStart() end
+    if input:released('down') then self:onBoostEnd() end
     if input:down('down') and self.boost > 1 and self.canBoost then
         self.maxV = 0.5 * self.baseMaxV
         self.boosting = true
@@ -514,6 +536,7 @@ function Player:update(dt)
             self.boosting = false
             self.canBoost = false
             self.boostTimer = 0
+            self:onBoostEnd()
         end
     end
     self.trailColour = self.boosting and boostColour or skillPointColour
