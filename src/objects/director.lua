@@ -37,7 +37,17 @@ function Director:new(stage)
         { 'SkillPoint', 58 * stage.player.spSpawnChanceMultiplier }
     )
     self.timer:every(16, function()
-        self.stage.area:addGameObject(self.resourceSpawnChance:next(), Random(0, gw), Random(0, gh))
+        local resource = self.resourceSpawnChance:next()
+        self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+        
+        if resource == 'Boost' and stage.player.chances.doubleBoostSpawnChance:next() then
+            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+        elseif resource == 'Health' and stage.player.chances.doubleHpSpawnChance:next() then
+            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+        elseif resource == 'SkillPoint' and stage.player.chances.doubleSpSpawnChance:next() then
+            self.stage.area:addGameObject(resource, Random(0, gw), Random(0, gh))
+        end
+
     end)
     self.timer:every(30, function()
         self.stage.area:addGameObject('Attack', Random(0, gw), Random(0, gh)) 

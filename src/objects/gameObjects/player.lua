@@ -74,6 +74,11 @@ function Player:new(area, x, y, opts)
     self.hpSpawnChanceMultiplier = 1
     self.spSpawnChanceMultiplier = 1
     self.boostSpawnChanceMultiplier = 1
+    self.doubleHpSpawnChance = 100
+    self.doubleSpSpawnChance = 100
+    self.doubleBoostSpawnChance = 100
+
+    self.attackTwiceOnShootChance = 10
 
     self.launchHomingProjectileOnAmmoPickupChance = 0
     self.regainHpOnAmmoPickupChance = 0
@@ -95,6 +100,7 @@ function Player:new(area, x, y, opts)
     
     self.barrageOnKillChance = 0
     self.regainAmmoOnKillChance = 0
+    self.spawnDoubleAmmoOnKillChance = 100
     self.launchHomingProjectileOnKillChance = 0
     self.regainBoostOnKillChance = 0
     self.spawnBoostOnKillChance = 0
@@ -363,7 +369,7 @@ function Player:onCycle()
     end
 end
 
-function Player:onKill()
+function Player:onKill(object)
     if self.chances.barrageOnKillChance:next() then
         self:fireBarrage()
     end
@@ -386,6 +392,10 @@ function Player:onKill()
         self.attackSpeedMultiplierBoosting = true
         self.timer:after(4, function() self.attackSpeedMultiplierBoosting = false end)
         self.area:addGameObject('InfoText', self.x, self.y, { text = 'Attack Speed Boost!', colour = ammoColour })
+    end
+    if self.chances.spawnDoubleAmmoOnKillChance:next() then
+        self.area:addGameObject('Ammo', object.x + Random(-10, 10), object.y + Random(-10, 10)) 
+        self.area:addGameObject('InfoText', object.x, object.y, { text = 'Double Ammo!', colour = ammoColour })
     end
 end
 
@@ -537,6 +547,10 @@ function Player:update(dt)
     if self.shootTimer > self.shootCooldown / self.attackSpeedMultiplier.value then
         self.shootTimer = 0
         self:shoot()
+        if self.chances.attackTwiceOnShootChance:next() then
+            self:shoot()
+            self.area:addGameObject('InfoText', self.x, self.y, { text = 'Double Shot!!!', colour = attacks[self.attack].colour })
+        end
     end
 
     if self.moveSpeedMultiplierBoosting then self.moveSpeedMultiplier:increase(100) end

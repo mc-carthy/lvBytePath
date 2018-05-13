@@ -40,7 +40,7 @@ function Projectile:update(dt)
             end
             object:hit(self.damage)
             if object.hp and object.hp <= 0 then
-                currentRoom.player:onKill()
+                currentRoom.player:onKill(object)
             end
             self:die()
         end
