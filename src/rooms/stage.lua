@@ -61,7 +61,7 @@ end
 function Stage:draw()
     love.graphics.setCanvas(self.mainCanvas)
     love.graphics.clear()
-        camera:attach(0, 0, gw * sx, gh * sy)
+        camera:attach(0, 0, gw * 2, gh * 2)
         self.area:draw()
         camera:detach()
 

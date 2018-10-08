@@ -140,7 +140,7 @@ function camera:attach(x,y,w,h, noclip)
 		love.graphics.setScissor(x,y,w,h)
 	end
 
-	local cx,cy = x+w/2, y+h/2
+	local cx,cy = (x+w)/2, (y+h)/2
 	love.graphics.push()
 	love.graphics.translate(cx, cy)
 	love.graphics.scale(self.scale)

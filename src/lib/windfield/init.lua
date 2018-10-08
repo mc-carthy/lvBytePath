@@ -571,7 +571,7 @@ function World:queryCircleArea(x, y, radius, collision_class_names)
     local outs = {}
     for _, collider in ipairs(colliders) do
         if self:collisionClassInCollisionClassesList(collider.collision_class, collision_class_names) then
-            for _, fixture in ipairs(collider.body:getFixtureList()) do
+            for _, fixture in ipairs(collider.body:getFixtures()) do
                 if self.wf.Math.polygon.getCircleIntersection(x, y, radius, {collider.body:getWorldPoints(fixture:getShape():getPoints())}) then
                     table.insert(outs, collider)
                     break
@@ -590,7 +590,7 @@ function World:queryRectangleArea(x, y, w, h, collision_class_names)
     local outs = {}
     for _, collider in ipairs(colliders) do
         if self:collisionClassInCollisionClassesList(collider.collision_class, collision_class_names) then
-            for _, fixture in ipairs(collider.body:getFixtureList()) do
+            for _, fixture in ipairs(collider.body:getFixtures()) do
                 if self.wf.Math.polygon.isPolygonInside({x, y, x+w, y, x+w, y+h, x, y+h}, {collider.body:getWorldPoints(fixture:getShape():getPoints())}) then
                     table.insert(outs, collider)
                     break
@@ -615,7 +615,7 @@ function World:queryPolygonArea(vertices, collision_class_names)
     local outs = {}
     for _, collider in ipairs(colliders) do
         if self:collisionClassInCollisionClassesList(collider.collision_class, collision_class_names) then
-            for _, fixture in ipairs(collider.body:getFixtureList()) do
+            for _, fixture in ipairs(collider.body:getFixtures()) do
                 if self.wf.Math.polygon.isPolygonInside(vertices, {collider.body:getWorldPoints(fixture:getShape():getPoints())}) then
                     table.insert(outs, collider)
                     break
@@ -661,12 +661,12 @@ function World:removeJoint(joint)
 end
 
 function World:destroy()
-    local bodies = self.box2d_world:getBodyList()
+    local bodies = self.box2d_world:getBodies()
     for _, body in ipairs(bodies) do
-        local collider = body:getFixtureList()[1]:getUserData()
+        local collider = body:getFixtures()[1]:getUserData()
         collider:destroy()
     end
-    local joints = self.box2d_world:getJointList()
+    local joints = self.box2d_world:getJoints()
     for _, joint in ipairs(joints) do joint:destroy() end
     self.box2d_world:destroy()
     self.box2d_world = nil

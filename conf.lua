@@ -1,7 +1,7 @@
-gw = 480
-gh = 270 
-sx = 2
-sy = 2
+gw = 320
+gh = 240 
+sx = 3
+sy = 3
 
 function love.conf(t)
     t.window.width = gw
