@@ -89,7 +89,7 @@ function Stage:draw()
         local hp, maxHp = self.player.hp, self.player.maxHp
         love.graphics.setColor(r, g, b)
         love.graphics.rectangle('fill', gw / 2 - 52, gh - 16, 48 * (hp / maxHp), 4)
-        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.setColor(r - 32 / 255, g - 32 / 255, b - 32 / 255)
         love.graphics.rectangle('line', gw / 2 - 52, gh - 16, 48, 4)
         love.graphics.print(
             'HP', 
@@ -109,7 +109,7 @@ function Stage:draw()
         local ammo, maxAmmo = math.floor(self.player.ammo), self.player.maxAmmo
         love.graphics.setColor(r, g, b)
         love.graphics.rectangle('fill', gw / 2 - 52, 16, 48 * (ammo / maxAmmo), 4)
-        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.setColor(r - 32 / 255, g - 32 / 255, b - 32 / 255)
         love.graphics.rectangle('line', gw / 2 - 52, 16, 48, 4)
         love.graphics.print(
             'AMMO', 
@@ -129,7 +129,7 @@ function Stage:draw()
         local boost, maxBoost = self.player.boost, self.player.maxBoost
         love.graphics.setColor(r, g, b)
         love.graphics.rectangle('fill', gw / 2 + 4, 16, 48 * (boost / maxBoost), 4)
-        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.setColor(r - 32 / 255, g - 32 / 255, b - 32 / 255)
         love.graphics.rectangle('line', gw / 2 + 4, 16, 48, 4)
         love.graphics.print(
             'BOOST', 
@@ -149,7 +149,7 @@ function Stage:draw()
         local cycle, cycleCooldown = self.player.cycleTimer, self.player.cycleCooldown
         love.graphics.setColor(r, g, b)
         love.graphics.rectangle('fill', gw / 2 + 4, gh - 16, 48 * (cycle / cycleCooldown), 4)
-        love.graphics.setColor(r - 32, g - 32, b - 32)
+        love.graphics.setColor(r - 32 / 255, g - 32 / 255, b - 32 / 255)
         love.graphics.rectangle('line', gw / 2 + 4, gh - 16, 48, 4)
         love.graphics.print(
             'CYCLE', 
@@ -158,13 +158,13 @@ function Stage:draw()
             math.floor(self.font:getWidth('CYCLE') / 2), math.floor(self.font:getHeight() / 2)
         )
 
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(255 / 255, 255 / 255, 255 / 255)
     love.graphics.setCanvas()
     
-    -- love.graphics.setColor(0, 0, 0, 255)
+    -- love.graphics.setColor(0, 0, 0, 255 / 255)
     -- love.graphics.rectangle("fill", 0, 0, gw * sx, gw * sy)
 
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, 255 / 255)
     love.graphics.setBlendMode('alpha', 'premultiplied')
     love.graphics.draw(self.mainCanvas, 0, 0, 0, sx, sy)
     love.graphics.setBlendMode('alpha')

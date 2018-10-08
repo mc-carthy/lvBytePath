@@ -70,7 +70,7 @@ function love.draw()
     if flashFrames then
         love.graphics.setColor(backgroundColour)
         love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(1, 1, 1)
     end
 end
 
@@ -104,9 +104,9 @@ function recursiveEnumerate(folder, fileList)
     local items = love.filesystem.getDirectoryItems(folder)
     for _, item in pairs(items) do
         local file = folder .. '/' .. item
-        if love.filesystem.isFile(file) then
+        if love.filesystem.getInfo(file).type == 'file' then
             table.insert(fileList, file)
-        elseif love.filesystem.isDirectory(file) then
+        elseif love.filesystem.getInfo(file).type == 'directory' then
             recursiveEnumerate(file, fileList)
         end
     end

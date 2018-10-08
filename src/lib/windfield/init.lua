@@ -77,12 +77,12 @@ function World:draw(alpha)
     -- get the current color values to reapply
     local r, g, b, a = love.graphics.getColor()
     -- alpha value is optional
-    alpha = alpha or 255
+    alpha = alpha or 1
     -- Colliders debug
-    love.graphics.setColor(222, 222, 222, alpha)
-    local bodies = self.box2d_world:getBodyList()
+    love.graphics.setColor(222 / 255, 222 / 255, 222 / 255, alpha)
+    local bodies = self.box2d_world:getBodies()
     for _, body in ipairs(bodies) do
-        local fixtures = body:getFixtureList()
+        local fixtures = body:getFixtures()
         for _, fixture in ipairs(fixtures) do
             if fixture:getShape():type() == 'PolygonShape' then
                 love.graphics.polygon('line', body:getWorldPoints(fixture:getShape():getPoints()))
@@ -99,17 +99,17 @@ function World:draw(alpha)
             end
         end
     end
-    love.graphics.setColor(255, 255, 255, alpha)
+    love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, alpha)
 
     -- Joint debug
-    love.graphics.setColor(222, 128, 64, alpha)
-    local joints = self.box2d_world:getJointList()
+    love.graphics.setColor(222 / 255, 128 / 255, 64 / 255, alpha)
+    local joints = self.box2d_world:getJoints()
     for _, joint in ipairs(joints) do
         local x1, y1, x2, y2 = joint:getAnchors()
         if x1 and y1 then love.graphics.circle('line', x1, y1, 4) end
         if x2 and y2 then love.graphics.circle('line', x2, y2, 4) end
     end
-    love.graphics.setColor(255, 255, 255, alpha)
+    love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, alpha)
 
     -- Query debug
     love.graphics.setColor(64, 64, 222, alpha)
@@ -206,9 +206,9 @@ function World:collisionClear()
 end
 
 function World:collisionEventsClear()
-    local bodies = self.box2d_world:getBodyList()
+    local bodies = self.box2d_world:getBodies()
     for _, body in ipairs(bodies) do
-        local collider = body:getFixtureList()[1]:getUserData()
+        local collider = body:getFixtures()[1]:getUserData()
         collider:collisionEventsClear()
     end
 end
